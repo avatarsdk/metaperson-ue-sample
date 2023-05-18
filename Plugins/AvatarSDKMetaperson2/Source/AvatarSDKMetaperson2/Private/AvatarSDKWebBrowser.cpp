@@ -10,6 +10,7 @@ void UAvatarSDKWebBrowser::Init()
     const FString ProxyObjectName = TEXT("avatarsdk_proxy");
     if (!CallbackProxy) {
         CallbackProxy = NewObject<UAvatarSDKBrowserCallbackProxy>(this, *ProxyObjectName);
+        CallbackProxy->SetOnAvatarExportedDelegate(OnAvatarExported);
     }
     WebBrowserWidget->BindUObject(ProxyObjectName, CallbackProxy);
 	ExecuteJavascript(GetJavascriptCode());
@@ -72,5 +73,12 @@ void UAvatarSDKWebBrowser::OnUrlChangedHandler(const FText& Text)
 
 void UAvatarSDKBrowserCallbackProxy::AvatarExportCallback(FString Url)
 {
+    if (OnAvatarExported.IsBound()) {
+        OnAvatarExported.Broadcast(Url);
+    }
+}
 
+void UAvatarSDKBrowserCallbackProxy::SetOnAvatarExportedDelegate(FOnAvatarExported Delegate)
+{
+    OnAvatarExported = Delegate;
 }

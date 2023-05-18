@@ -40,10 +40,13 @@ public class AvatarSDKMetaperson2 : ModuleRules
 				"SlateCore",
                 "WebBrowser",
                 "WebBrowserWidget",
-				"UMG"
+				"UMG",
+                "HTTP",
+                "MinizWrapper"
+                
 				// ... add private dependencies that you statically link with here ...	
 			}
-			);
+            );
 		
 		
 		DynamicallyLoadedModuleNames.AddRange(

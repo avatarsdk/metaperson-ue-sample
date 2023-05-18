@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class FAvatarSDKMetaperson2Module : public IModuleInterface
+DECLARE_LOG_CATEGORY_CLASS(LogMetaperson2, Log, All);
+
+
+class AVATARSDKMETAPERSON2_API FAvatarSDKMetaperson2Module : public IModuleInterface
 {
 public:
 

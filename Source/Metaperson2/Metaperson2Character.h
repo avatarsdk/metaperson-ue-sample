@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AvatarSDKComponent.h"
 #include "Metaperson2Character.generated.h"
 
 UCLASS(config=Game)
@@ -18,6 +19,9 @@ class AMetaperson2Character : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UAvatarSDKComponent* AvatarSDKComponent;
 public:
 	AMetaperson2Character();
 
