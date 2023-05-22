@@ -1,5 +1,6 @@
 #include "AvatarSDKComponent.h"
 
+
 UAvatarSDKComponent::UAvatarSDKComponent()
 {
 }
@@ -7,15 +8,16 @@ UAvatarSDKComponent::UAvatarSDKComponent()
 void UAvatarSDKComponent::LoadAvatar(const FString& ModelPath)
 {
 	if (!CheckSkeletalMesh()) {
-		//log
+		UE_LOG(LogMetaperson2, Error, TEXT("UAvatarSDKComponent: LoadAvatar: SkeletalMeshComponent is not valid"));
 		return;
 	}
-
+	Loader = NewObject<UAvatarSDKLoader>(this, TEXT("Loader"));
+	Loader->LoadAvatarAsync(ModelPath, SkeletalMeshComponent, OnAvatarLoaded);
 }
 
 void UAvatarSDKComponent::DownloadAvatar(const FString& Url)
 {
-	UAvatarSDKDownloader* Downloader = NewObject<UAvatarSDKDownloader>(this, TEXT("Downloader"));
+	Downloader = NewObject<UAvatarSDKDownloader>(this, TEXT("Downloader"));
 	Downloader->DownloadFileByUrl(Url, OnAvatarDownloaded, OnAvatarDownloadProgress);
 }
 

@@ -3,10 +3,11 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "AvatarSDKData.h"
+#include "AvatarSDKMetaperson2.h"
 #include "AvatarSDKDownloader.h"
+#include "AvatarSDKLoader.h"
 #include "AvatarSDKComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAvatarLoaded, const FString&, Url);
 
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -36,4 +37,8 @@ public:
 
 protected:
 	bool CheckSkeletalMesh();
+	UPROPERTY()
+	UAvatarSDKDownloader* Downloader;
+	UPROPERTY()
+	UAvatarSDKLoader* Loader;
 };

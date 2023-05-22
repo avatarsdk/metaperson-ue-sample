@@ -26,6 +26,6 @@ FAvatarData UAvatarSDKUtilsLibrary::GetAvatarData(const FString& Url)
     Result.Code = Code;
     Result.DirectoryPath = FPaths::Combine(GetCommonDataFolder(), TEXT("avatars"), Code);
     Result.ArchivePath = FPaths::Combine(Result.DirectoryPath, FileName);
-
+    Result.ModelPath = FPaths::Combine(Result.DirectoryPath, TEXT("model.glb"));
     return Result;
 }

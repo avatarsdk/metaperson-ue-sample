@@ -19,6 +19,18 @@
 			"Name": "AvatarSDKMetaperson2",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "glTFRuntime",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"WhitelistPlatforms": [ "Win64", "Android" ]
+		},
+		{
+			"Name": "MinizWrapper",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"WhitelistPlatforms": [ "Win64", "Android" ]
 		}
 	]
 }
