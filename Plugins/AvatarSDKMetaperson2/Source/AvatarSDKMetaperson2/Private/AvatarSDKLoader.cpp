@@ -15,6 +15,7 @@ void UAvatarSDKLoader::LoadAvatarAsync(const FString& GlbPath, USkeletalMeshComp
 	Config.BaseTransform = transform;
 	Config.TransformBaseType = EglTFRuntimeTransformBaseType::Transform;
 	Config.SceneScale = 100.0f;
+	
 
 	GltfRuntimeAsset = UglTFRuntimeFunctionLibrary::glTFLoadAssetFromFilename(GlbPath, false, Config);
 	if (!GltfRuntimeAsset)
@@ -25,7 +26,11 @@ void UAvatarSDKLoader::LoadAvatarAsync(const FString& GlbPath, USkeletalMeshComp
 	TArray<FString> ExcludeNodes;
 	GlTFRuntimeSkeletalMeshDelegate.BindDynamic(this, &UAvatarSDKLoader::GltfRuntimeSkeletalMeshCallback);
 
+	FglTFRuntimeSkeletonConfig SkeletonConfig;
+	SkeletonConfig.bAddRootBone = true;
 	FglTFRuntimeSkeletalMeshConfig SkeletalMeshConfig;
+	SkeletalMeshConfig.SkeletonConfig = SkeletonConfig;
+	//SkeletalMeshConfig.SaveToPackage = TEXT("/Game/Ext");
 	GltfRuntimeAsset->LoadSkeletalMeshRecursiveAsync("", ExcludeNodes, GlTFRuntimeSkeletalMeshDelegate, SkeletalMeshConfig);
 }
 
