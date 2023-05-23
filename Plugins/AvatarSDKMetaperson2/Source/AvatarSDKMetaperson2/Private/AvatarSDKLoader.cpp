@@ -3,6 +3,7 @@
 
 void UAvatarSDKLoader::LoadAvatarAsync(const FString& GlbPath, USkeletalMeshComponent* InSkeletalMeshComponent, FOnAvatarLoaded AvatarLoadedDelegate)
 {
+	LoadSkeleton();
 	SkeletalMeshComponent = InSkeletalMeshComponent;
 	OnAvatarLoaded = AvatarLoadedDelegate;
 
@@ -28,8 +29,10 @@ void UAvatarSDKLoader::LoadAvatarAsync(const FString& GlbPath, USkeletalMeshComp
 
 	FglTFRuntimeSkeletonConfig SkeletonConfig;
 	SkeletonConfig.bAddRootBone = true;
+	
 	FglTFRuntimeSkeletalMeshConfig SkeletalMeshConfig;
 	SkeletalMeshConfig.SkeletonConfig = SkeletonConfig;
+	SkeletalMeshConfig.Skeleton = Skeleton;
 	//SkeletalMeshConfig.SaveToPackage = TEXT("/Game/Ext");
 	GltfRuntimeAsset->LoadSkeletalMeshRecursiveAsync("", ExcludeNodes, GlTFRuntimeSkeletalMeshDelegate, SkeletalMeshConfig);
 }
@@ -46,4 +49,12 @@ void UAvatarSDKLoader::GltfRuntimeSkeletalMeshCallback(USkeletalMesh* InSkeletal
 	if (OnAvatarLoaded.IsBound()) {
 		OnAvatarLoaded.Broadcast("");
 	}
+}
+
+void UAvatarSDKLoader::LoadSkeleton()
+{
+	if (!IsValid(Skeleton)) {
+		Skeleton = Cast<USkeleton>(StaticLoadObject(USkeleton::StaticClass(), nullptr, *FString("/AvatarSDKMetaperson2/Skeleton/Metaperson2_Template_Skeleton.Metaperson2_Template_Skeleton")));
+	}
+	check(IsValid(Skeleton));
 }

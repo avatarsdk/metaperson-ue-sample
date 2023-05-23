@@ -27,4 +27,8 @@ protected:
 	FglTFRuntimeSkeletalMeshAsync GlTFRuntimeSkeletalMeshDelegate;
 	UFUNCTION()
 	void GltfRuntimeSkeletalMeshCallback(USkeletalMesh* InSkeletalMesh);
+	UFUNCTION()
+	void LoadSkeleton();
+	UPROPERTY()
+	USkeleton* Skeleton;
 };
