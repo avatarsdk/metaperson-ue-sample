@@ -19,6 +19,10 @@ void UAvatarSDKLoader::LoadAvatarAsync(const FString& GlbPath, USkeletalMeshComp
 	
 
 	GltfRuntimeAsset = UglTFRuntimeFunctionLibrary::glTFLoadAssetFromFilename(GlbPath, false, Config);
+	auto NumImages = GltfRuntimeAsset->GetNumImages();
+	for (int i = 0; i < NumImages; i++) {
+		UE_LOG(LogMetaperson2, Error, TEXT("o"));
+	}
 	if (!GltfRuntimeAsset)
 	{
 		UE_LOG(LogMetaperson2, Error, TEXT("UAvatarSDKLoader: LoadAvatar: GltfRuntimeAsset is NULL"));
@@ -39,6 +43,12 @@ void UAvatarSDKLoader::LoadAvatarAsync(const FString& GlbPath, USkeletalMeshComp
 
 void UAvatarSDKLoader::GltfRuntimeSkeletalMeshCallback(USkeletalMesh* InSkeletalMesh)
 {
+	for (int i = 0; i < InSkeletalMesh->Materials.Num(); i++) {
+		auto Mat = InSkeletalMesh->Materials[i];
+		TArray<UTexture*>t;
+		UE_LOG(LogMetaperson2, Error, TEXT("UAvatarSDKLoader: GltfRuntimeSkeletalMeshCallback: SkeletalMeshComponent is not valid"));
+
+	}
 	if (!IsValid(SkeletalMeshComponent)) {
 		UE_LOG(LogMetaperson2, Error, TEXT("UAvatarSDKLoader: GltfRuntimeSkeletalMeshCallback: SkeletalMeshComponent is not valid"));
 	}
