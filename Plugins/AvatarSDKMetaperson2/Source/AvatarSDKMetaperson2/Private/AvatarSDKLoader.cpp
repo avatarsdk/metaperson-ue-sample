@@ -16,10 +16,8 @@ void UAvatarSDKLoader::LoadAvatarAsync(const FString& GlbPath, USkeletalMeshComp
 	Config.BaseTransform = transform;
 	Config.TransformBaseType = EglTFRuntimeTransformBaseType::Transform;
 	Config.SceneScale = 100.0f;
-	
 
 	GltfRuntimeAsset = UglTFRuntimeFunctionLibrary::glTFLoadAssetFromFilename(GlbPath, false, Config);
-	auto NumImages = GltfRuntimeAsset->GetNumImages();
 	if (!GltfRuntimeAsset)
 	{
 		UE_LOG(LogMetaperson2, Error, TEXT("UAvatarSDKLoader: LoadAvatar: GltfRuntimeAsset is NULL"));
@@ -37,7 +35,7 @@ void UAvatarSDKLoader::LoadAvatarAsync(const FString& GlbPath, USkeletalMeshComp
 	SkeletalMeshConfig.Skeleton = Skeleton;
 	
 	SkeletalMeshConfig.MaterialsConfig = GetRuntimeMaterialsConfig();
-	//SkeletalMeshConfig.SaveToPackage = TEXT("/Game/Ext");
+	//SkeletalMeshConfig.SaveToPackage = TEXT("/Game/ExportedMesh");
 	GltfRuntimeAsset->LoadSkeletalMeshRecursiveAsync("", ExcludeNodes, GlTFRuntimeSkeletalMeshDelegate, SkeletalMeshConfig);
 }
 
@@ -67,7 +65,6 @@ FglTFRuntimeMaterialsConfig UAvatarSDKLoader::GetRuntimeMaterialsConfig()
 {
 	MaterialsOverrideByNameMap.Empty();
 	FglTFRuntimeMaterialsConfig Result;
-	
 
 	Result.bMaterialsOverrideMapInjectParams = true;
 	FString HairMaterialPath = TEXT("/AvatarSDKMetaperson2/Materials/AvatarHair");
@@ -76,27 +73,4 @@ FglTFRuntimeMaterialsConfig UAvatarSDKLoader::GetRuntimeMaterialsConfig()
 	Result.MaterialsOverrideByNameMap = MaterialsOverrideByNameMap;
 
 	return Result;
-	/*FString CorneaMaterialPath = TEXT("/AvatarSDKMetaperson2/Materials/CorneaBaseMaterial");
-	auto CorneaMaterial = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), nullptr, *CorneaMaterialPath));
-
-	MaterialsOverrideByNameMap.Add(TEXT("AvatarLeftCornea"), CorneaMaterial);
-	MaterialsOverrideByNameMap.Add(TEXT("AvatarRightCornea"), CorneaMaterial);
-
-	FString EyelashesMaterialPath = TEXT("/AvatarSDKMetaperson2/Materials/EyelashesBaseMaterial");
-	MaterialsOverrideByNameMap.Add(TEXT("AvatarEyelashes"), Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), nullptr, *EyelashesMaterialPath)));
-
-	FString EyesMaterialPath = TEXT("/AvatarSDKMetaperson2/Materials/EyeBaseMaterial");
-	auto EyeBallMaterial = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), nullptr, *EyesMaterialPath));
-
-	MaterialsOverrideByNameMap.Add(TEXT("AvatarLeftEyeball"), EyeBallMaterial);
-	MaterialsOverrideByNameMap.Add(TEXT("AvatarRightEyeball"), EyeBallMaterial);
-
-	FString TeethMaterialPath = TEXT("/AvatarSDKMetaperson2/Materials/TeethBaseMaterial");
-	auto TeethMaterial = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), nullptr, *TeethMaterialPath));
-
-	MaterialsOverrideByNameMap.Add(TEXT("AvatarTeethLower"), TeethMaterial);
-	MaterialsOverrideByNameMap.Add(TEXT("AvatarTeethUpper"), TeethMaterial);
-	
-	Result.MaterialsOverrideByNameMap = MaterialsOverrideByNameMap;
-	return Result;*/
 }
