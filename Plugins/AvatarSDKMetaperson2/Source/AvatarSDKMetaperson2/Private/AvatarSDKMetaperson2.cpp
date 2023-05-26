@@ -1,12 +1,25 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "AvatarSDKMetaperson2.h"
+#include "AvatarSDKRuntimeSettings.h"
+#include "Developer/Settings/Public/ISettingsModule.h"
+
 
 #define LOCTEXT_NAMESPACE "FAvatarSDKMetaperson2Module"
 
 void FAvatarSDKMetaperson2Module::StartupModule()
 {
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+	ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings");
+
+	if (SettingsModule != nullptr)
+	{
+		SettingsModule->RegisterSettings("Project", "Plugins", "Avatar SDK Metaperson 2",
+			LOCTEXT("AvatarSDKSettingsName", "Avatar SDK Metaperson 2"),
+			LOCTEXT("AvatarSDKSettingsDescription", "Configure the Avatar SDK plugin."),
+			GetMutableDefault<UAvatarSDKRuntimeSettings>()
+		);
+
+	}
 }
 
 void FAvatarSDKMetaperson2Module::ShutdownModule()

@@ -1,12 +1,32 @@
 #include "AvatarSDKWebBrowser.h"
+#include "AvatarSDKMetaperson2.h"
+#include "AvatarSDKRuntimeSettings.h"
 //#include "SWebBrowser.h"
 
+
+UAvatarSDKWebBrowser::UAvatarSDKWebBrowser() {
+    ReadParametersFromSettings = true;
+}
 void UAvatarSDKWebBrowser::Init()
 {
-    //TODO: Remove This:
-    ClientId = TEXT("fO3tpBCOGfEWM5CqbKUAeJ3OKiZjA4i8knIbjSMg");
-    ClientSecret = TEXT("qEZoR0x0tTIpxjN1S351Xvzyo62cAdVahi3Z7xfOBZtWXyvN1P7hMU54mUiVzo9zRRNEk1VqNX7PlthQfm9iAV0SOM1BTT835MQ7dVBHIvmbHURxBgcvRHxOGGREuIY7");
+    if (ReadParametersFromSettings) {
+        const UAvatarSDKRuntimeSettings* AvatarSDKRuntimeSettings = GetDefault<UAvatarSDKRuntimeSettings>();
+        if (AvatarSDKRuntimeSettings)
+        {
+            ClientId = AvatarSDKRuntimeSettings->ClientId;
+            ClientSecret = AvatarSDKRuntimeSettings->ClientSecret;
+        }
+        else {			
+            UE_LOG(LogMetaperson2, Error, TEXT("UAvatarSDKWebBrowser: Init: Could not read settings"));
+        }
+    }
 
+    if (ClientId.IsEmpty() || ClientSecret.IsEmpty()) {
+        if (OnBrowserError.IsBound()) {
+            OnBrowserError.Broadcast(TEXT("ClientId/ClientSecret parameters are empty. Please check your settings in Edit->Project Settings->Plugins->Avatar SDK Metaperson 2"));
+        }
+    }
+    
     const FString ProxyObjectName = TEXT("avatarsdk_proxy");
     if (!CallbackProxy) {
         CallbackProxy = NewObject<UAvatarSDKBrowserCallbackProxy>(this, *ProxyObjectName);

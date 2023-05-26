@@ -7,6 +7,8 @@
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAvatarExported, const FString&, Url);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBrowserError, const FString&, Message);
+
 
 UCLASS()
 class AVATARSDKMETAPERSON2_API UAvatarSDKBrowserCallbackProxy : public UObject
@@ -26,16 +28,21 @@ class AVATARSDKMETAPERSON2_API UAvatarSDKWebBrowser : public UWebBrowser
 {
 	GENERATED_BODY()
 public:
+	UAvatarSDKWebBrowser();
 	UFUNCTION(BlueprintCallable, Category = "AvatarSDK|Metaperson 2")
 	void Init();
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AvatarSDK|Metaperson 2")
 	FString ClientId;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AvatarSDK|Metaperson 2")
 	FString ClientSecret;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AvatarSDK|Metaperson 2")
+	bool ReadParametersFromSettings;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAvatarExported OnAvatarExported;
+	UPROPERTY(BlueprintAssignable)
+	FOnBrowserError OnBrowserError;
 protected:
 	UPROPERTY()
 	UAvatarSDKBrowserCallbackProxy* CallbackProxy;

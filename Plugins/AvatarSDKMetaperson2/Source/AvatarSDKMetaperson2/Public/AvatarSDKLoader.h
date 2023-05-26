@@ -31,4 +31,9 @@ protected:
 	void LoadSkeleton();
 	UPROPERTY()
 	USkeleton* Skeleton;
+protected:
+	FglTFRuntimeMaterialsConfig GetRuntimeMaterialsConfig();
+	
+	UPROPERTY()
+	TMap<FString, UMaterialInterface*> MaterialsOverrideByNameMap;
 };
