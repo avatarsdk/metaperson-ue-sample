@@ -20,7 +20,8 @@ public class AvatarSDKMetaperson2 : ModuleRules
 				"Core",
                 "glTFRuntime",
                 "MinizWrapper",
-			}
+                "HTTP",
+            }
             );
 			
 		
@@ -34,7 +35,7 @@ public class AvatarSDKMetaperson2 : ModuleRules
                 "WebBrowser",
                 "WebBrowserWidget",
 				"UMG",
-                "HTTP",
+               
 				// ... add private dependencies that you statically link with here ...	
 			}
             );
