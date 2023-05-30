@@ -5,7 +5,7 @@
  * UNLESS REQUIRED BY APPLICABLE LAW OR AGREED BY ITSEEZ3D, INC. IN WRITING, SOFTWARE DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OR
  * CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED
  * See the License for the specific language governing permissions and limitations under the License.
- * Written by Itseez3D, Inc. <support@itseez3D.com>, May 2020
+ * Written by Itseez3D, Inc. <support@itseez3D.com>, May 2023
  */
 
 #pragma once

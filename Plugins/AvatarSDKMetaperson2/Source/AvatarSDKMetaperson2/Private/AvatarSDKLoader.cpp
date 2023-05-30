@@ -1,3 +1,13 @@
+/* Copyright (C) Itseez3D, Inc. - All Rights Reserved
+ * You may not use this file except in compliance with an authorized license
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * UNLESS REQUIRED BY APPLICABLE LAW OR AGREED BY ITSEEZ3D, INC. IN WRITING, SOFTWARE DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED
+ * See the License for the specific language governing permissions and limitations under the License.
+ * Written by Itseez3D, Inc. <support@itseez3D.com>, May 2023
+ */
+
 #include "AvatarSDKLoader.h"
 
 
@@ -34,6 +44,7 @@ void UAvatarSDKLoader::LoadAvatarAsync(const FString& GlbPath, USkeletalMeshComp
 	SkeletalMeshConfig.SkeletonConfig = SkeletonConfig;	
 	SkeletalMeshConfig.Skeleton = Skeleton;
 	
+
 	SkeletalMeshConfig.MaterialsConfig = GetRuntimeMaterialsConfig();
 	//SkeletalMeshConfig.SaveToPackage = TEXT("/Game/ExportedMesh");
 	GltfRuntimeAsset->LoadSkeletalMeshRecursiveAsync("", ExcludeNodes, GlTFRuntimeSkeletalMeshDelegate, SkeletalMeshConfig);
@@ -67,8 +78,9 @@ FglTFRuntimeMaterialsConfig UAvatarSDKLoader::GetRuntimeMaterialsConfig()
 	FglTFRuntimeMaterialsConfig Result;
 
 	Result.bMaterialsOverrideMapInjectParams = true;
-	FString HairMaterialPath = TEXT("/AvatarSDKMetaperson2/Materials/AvatarHair");
+	FString HairMaterialPath = TEXT("/AvatarSDKMetaperson2/Materials/Hair/AvatarHair");
 	auto HairMaterial = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), nullptr, *HairMaterialPath));
+	check(IsValid(HairMaterial));
 	MaterialsOverrideByNameMap.Add(TEXT("haircut"), HairMaterial);
 	Result.MaterialsOverrideByNameMap = MaterialsOverrideByNameMap;
 
