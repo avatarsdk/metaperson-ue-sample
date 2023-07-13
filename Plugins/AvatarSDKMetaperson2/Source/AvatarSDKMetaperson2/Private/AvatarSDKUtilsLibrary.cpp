@@ -24,13 +24,15 @@ FString UAvatarSDKUtilsLibrary::GetCommonDataFolder()
 
 FAvatarData UAvatarSDKUtilsLibrary::GetAvatarData(const FString& Url)
 {
-    const FString AvatatsToken = TEXT("/avatars/");    
-    auto SearchPos = Url.Find(AvatatsToken);
-    check(SearchPos > 0);
-    auto RightPart = Url.RightChop(SearchPos + AvatatsToken.Len());
-    FString Code, FileName;
-    RightPart.Split(TEXT("/"), &Code, &FileName);
-    
+    int32 CharIndex;
+    auto SearchPos = Url.FindLastChar('/', CharIndex);
+    check(SearchPos);
+    auto FileName = Url.RightChop(CharIndex + 1); // archive file name
+    auto LeftPart = Url.LeftChop(Url.Len() - CharIndex); // left part without archive file name
+    SearchPos = LeftPart.FindLastChar('/', CharIndex); // index of '/' in the left part
+    check(SearchPos);
+    auto Code = LeftPart.RightChop(CharIndex + 1); // avatar code
+
     FAvatarData Result;
     Result.Url = Url;
     Result.Code = Code;
