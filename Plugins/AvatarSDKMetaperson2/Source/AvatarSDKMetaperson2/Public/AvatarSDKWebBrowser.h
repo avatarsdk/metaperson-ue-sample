@@ -56,8 +56,7 @@ public:
 protected:
 	UPROPERTY()
 	UAvatarSDKBrowserCallbackProxy* CallbackProxy;
-	//const FString StartUrl = TEXT("https://metaperson.avatarsdk.com/iframe.html");
-	const FString StartUrl = TEXT("https://metaperson.avatarsdk.com/dev/new_haircuts/v3/iframe.html");
+	const FString StartUrl = TEXT("https://metaperson.avatarsdk.com/iframe.html");	
 
 	FString GetJavascriptCode() const;
 	virtual TSharedRef<SWidget> RebuildWidget() override;
