@@ -46,7 +46,7 @@ void UAvatarSDKLoader::LoadAvatarAsync(const FString& GlbPath, USkeletalMeshComp
 	
 
 	SkeletalMeshConfig.MaterialsConfig = GetRuntimeMaterialsConfig();
-	SkeletalMeshConfig.SaveToPackage = TEXT("/Game/ExportedMesh");
+	//SkeletalMeshConfig.SaveToPackage = TEXT("/Game/ExportedMesh");
 	GltfRuntimeAsset->LoadSkeletalMeshRecursiveAsync("", ExcludeNodes, GlTFRuntimeSkeletalMeshDelegate, SkeletalMeshConfig);
 }
 
