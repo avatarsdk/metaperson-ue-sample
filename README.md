@@ -14,7 +14,7 @@ Now you are ready to go:
 * Clone this repository to your computer
 * Create a Visual Studio 2022 project by right-clicking on Metaperson2.uproject and clicking "Generate Visual Studio Files".
 * Compile and Run Visual Studio project
-* Find the Edit->Project Settings->Plugins->Avatar SDK Metaperson 2 section in UE Editor and set these parameters in corresponding fields:
+* Find the Edit->Project Settings->Plugins->Avatar SDK Metaperson 2 section in UE Editor and set these parameters in the corresponding fields:
 
 ![Credentials](./Images/credentials.png)
 
