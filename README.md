@@ -1,6 +1,8 @@
 # MetaPerson - Unreal Engine sample
 This sample demonstrates how to embed the [MetaPerson Creator](https://metaperson.avatarsdk.com/) into Unreal Engine 5 applications.
 
+Watch also the [video tutorial on Youtube](https://www.youtube.com/watch?v=LslWA6CcWMs&ab_channel=AvatarSDK).
+
 ## Getting Started
 You need to complete the following steps before experimenting with this sample:
 
