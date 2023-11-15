@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- steps to add to build additions -->
+<root xmlns:android="http://schemas.android.com/apk/res/android">
+	<!-- init section is always evaluated once per architecture -->
+	<init>
+	    <setBool result="bSupported" value="false"/>
+			<isArch arch="armeabi-v7a">
+				<setBool result="bSupported" value="true"/>
+			</isArch>
+	        <isArch arch="arm64-v8a">
+	            <setBool result="bSupported" value="true"/>
+	        </isArch>
+	</init>
+
+	<!-- optional files or directories to copy to Intermediate/Android/APK -->
+	<resourceCopies>
+	    <isArch arch="arm64-v8a">
+	        <copyFile src="$S(PluginDir)/arm64-v8a/libassimp.so"
+	                  dst="$S(BuildDir)/libs/arm64-v8a/libassimp.so" />
+		</isArch>
+		<isArch arch="armeabi-v7a">
+	        <copyFile src="$S(PluginDir)/armeabi-v7a/libassimp.so"
+	                  dst="$S(BuildDir)/libs/armeabi-v7a/libassimp.so" />
+		</isArch>
+		 <copyDir src="$S(PluginDir)/xml"
+          dst = "$S(BuildDir)/res/xml" />   
+	</resourceCopies>
+	
+	<androidManifestUpdates>
+	 <addPermission android:name="android.permission.CAMERA"/> 
+ 	 <addPermission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />	  
+	 <addPermission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	 
+	 <setElement result="Provider" value="provider" />
+     <addAttribute tag="$Provider" name="android:name" value="android.support.v4.content.FileProvider" />
+     <addAttribute tag="$Provider" name="android:authorities" value="com.avatarsdk.android.fileprovider" />
+     <addAttribute tag="$Provider" name="android:exported" value="false" />
+     <addAttribute tag="$Provider" name="android:grantUriPermissions" value="true" />
+
+    <!-- create meta data -->
+     <setElement result="ProviderMetaData" value="meta-data" />
+     <addAttribute tag="$ProviderMetaData" name="android:name" value="android.support.FILE_PROVIDER_PATHS" />
+     <addAttribute tag="$ProviderMetaData" name="android:resource" value="@xml/file_paths" />
+
+    <!-- add meta data to provider -->
+     <addElement tag="$Provider" name="ProviderMetaData" />
+
+    <!-- add provider to application -->
+     <addElement tag="application" name="Provider" />
+   </androidManifestUpdates>
+	<gameActivityImportAdditions>
+		<insert>
+			<!--
+			Additional imports		
+			-->
+		import android.database.Cursor;
+		import android.net.Uri;
+		import android.provider.MediaStore;
+		import android.os.Environment;
+		import android.app.Application;
+		import java.util.Locale;
+		import android.support.v4.content.FileProvider;
+		import android.support.v4.content.ContextCompat;
+		import android.support.v4.app.ActivityCompat;
+		import android.Manifest;
+
+
+
+		</insert>
+	</gameActivityImportAdditions>
+	
+	<gameActivityOnActivityResultAdditions>
+		<insert>
+		if( requestCode == RESULT_LOAD_IMAGE )
+		{
+
+			if(resultCode == RESULT_OK)
+			{
+				Uri selectedImage = data.getData();
+				String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+				Cursor cursor = getContentResolver().query(selectedImage,
+						filePathColumn, null, null, null);
+				cursor.moveToFirst();
+
+				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+				ImagePath = cursor.getString(columnIndex);
+				cursor.close();
+			}
+		} 
+		else if(requestCode == RESULT_PHOTO_TAKEN)
+		{
+			if(resultCode == RESULT_OK)
+			{
+				ImagePath = photoFile.getPath();
+			}
+		}
+		</insert>
+	</gameActivityOnActivityResultAdditions>
+	
+	<gameActivityClassAdditions>
+		<insert>
+		public static final int RESULT_LOAD_IMAGE = 111;
+		public static final int RESULT_PHOTO_TAKEN = 112;
+		public static final int REQUEST_WRITE_PERMISSION_CODE = 113;
+		
+		public String ImagePath = "None";
+		private File photoFile = null;
+
+
+		public void AndroidThunkJava_OpenGallery()
+		{
+			 Intent GalleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+			 startActivityForResult(GalleryIntent, RESULT_LOAD_IMAGE);
+		}
+		
+		public String AndroidThunkJava_GetImagePath()
+		{
+			return ImagePath;
+		}
+		
+		public String AndroidThunkJava_GetPersistentDataPath() throws NameNotFoundException
+		{
+			Context context = getApplicationContext();
+			PackageInfo packageInfo = null;
+			String packageName = context.getPackageName();
+			PackageManager localPackageManager = context.getPackageManager();
+			packageInfo = localPackageManager.getPackageInfo(packageName, 0);
+			return packageInfo.applicationInfo.dataDir;
+		}
+		
+
+	  private File createImageFile() throws IOException {
+      // Create an image file name
+      String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+	  String imageFileName = "JPEG_" + timeStamp + "_";
+	  File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+	  File image = File.createTempFile(
+		imageFileName,  /* prefix */
+		".jpg",         /* suffix */
+		storageDir      /* directory */
+	  );
+
+    // Save a file: path for use with ACTION_VIEW intents
+    ImagePath = image.getAbsolutePath();
+    return image;
+}
+
+      public void AndroidThunkJava_TakeCameraPhoto()
+      {
+		Log.debug("=== AndroidThunkJava_TakeCameraPhoto ===");
+		Context context = getApplicationContext();
+
+		try 
+		{
+            photoFile = createImageFile();
+        } catch (IOException ex) 
+		{
+			Log.debug("=== IOException creating image ===");
+            return;
+        }
+	   
+        Uri photoUri = FileProvider.getUriForFile(this, "com.avatarsdk.android.fileprovider", photoFile);
+		Log.debug("=== Created photo Uri ===");
+
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		Log.debug("=== Created Intent ===");
+
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+        startActivityForResult(takePictureIntent, RESULT_PHOTO_TAKEN);
+		Log.debug("=== Activity started ===");
+	 
+      }
+		
+		 
+		</insert>
+	</gameActivityClassAdditions>
+</root>

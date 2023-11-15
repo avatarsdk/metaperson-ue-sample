@@ -40,11 +40,22 @@ void UAvatarSDKWebBrowser::Init()
         CallbackProxy = NewObject<UAvatarSDKBrowserCallbackProxy>(this, *ProxyObjectName);
         CallbackProxy->SetOnAvatarExportedDelegate(OnAvatarExported);
     }
+    
     WebBrowserWidget->BindUObject(ProxyObjectName, CallbackProxy);
-	ExecuteJavascript(GetJavascriptCode());
+
+#if PLATFORM_ANDROID
+    ExecuteJavascript(GetJavascriptCodeMobile());	
+#else 
+    ExecuteJavascript(GetJavascriptCodeDesktop());
+#endif
 }
 
-FString UAvatarSDKWebBrowser::GetJavascriptCode() const
+FString UAvatarSDKWebBrowser::GetJavascriptCodeMobile() const
+{
+    return GetJavascriptCode(TEXT("mobile_loaded"));
+}
+
+FString UAvatarSDKWebBrowser::GetJavascriptCode(const FString& EventName) const
 {
     FString JsCode = FString::Printf(TEXT(
         "const CLIENT_ID = '%s';"
@@ -55,7 +66,7 @@ FString UAvatarSDKWebBrowser::GetJavascriptCode() const
         "if (evt.data?.source === 'metaperson_creator') {"
         "let data = evt.data;"
         "let evtName = data?.eventName;"
-        "if (evtName === 'unity_loaded') {"
+        "if (evtName === '%s') {"
         "onUnityLoaded(evt, data);"
         "} else if (evtName === 'model_exported') {"
         "window.ue.avatarsdk_proxy.avatarexportcallback(event.data.url);"
@@ -82,8 +93,13 @@ FString UAvatarSDKWebBrowser::GetJavascriptCode() const
 
         "}"
         "window.addEventListener('message', onWindowMessage);"
-    ), *ClientId, *ClientSecret);
+    ), *ClientId, *ClientSecret, *EventName);
     return JsCode;
+}
+
+FString UAvatarSDKWebBrowser::GetJavascriptCodeDesktop() const
+{
+    return GetJavascriptCode(TEXT("unity_loaded"));   
 }
 
 TSharedRef<SWidget> UAvatarSDKWebBrowser::RebuildWidget()

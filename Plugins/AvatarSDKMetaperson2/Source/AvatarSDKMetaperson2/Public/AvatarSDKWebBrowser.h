@@ -56,9 +56,15 @@ public:
 protected:
 	UPROPERTY()
 	UAvatarSDKBrowserCallbackProxy* CallbackProxy;
-	const FString StartUrl = TEXT("https://metaperson.avatarsdk.com/iframe.html");	
+#if PLATFORM_ANDROID
+	const FString StartUrl = TEXT("https://mobile.metaperson.avatarsdk.com/");	
+#else
+	const FString StartUrl = TEXT("https://metaperson.avatarsdk.com/iframe.html");
+#endif
 
-	FString GetJavascriptCode() const;
+	FString GetJavascriptCode(const FString& EventName) const;
+	FString GetJavascriptCodeDesktop() const;
+	FString GetJavascriptCodeMobile() const;
 	virtual TSharedRef<SWidget> RebuildWidget() override;
 	UFUNCTION()
 	void OnUrlChangedHandler(const FText& Text);

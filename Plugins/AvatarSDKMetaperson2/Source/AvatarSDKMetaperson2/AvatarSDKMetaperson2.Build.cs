@@ -15,7 +15,15 @@ using System.Diagnostics;
 
 public class AvatarSDKMetaperson2 : ModuleRules
 {
-	public AvatarSDKMetaperson2(ReadOnlyTargetRules Target) : base(Target)
+    private string ModulePath
+    {
+        get { return ModuleDirectory; }
+    }
+    private string PlatformExtensionsPath
+    {
+        get { return Path.GetFullPath(Path.Combine(ModulePath, "../PlatformExtensions/")); }
+    }
+    public AvatarSDKMetaperson2(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
@@ -55,5 +63,11 @@ public class AvatarSDKMetaperson2 : ModuleRules
 				// ... add any modules that your module loads dynamically here ...
 			}
 			);
-	}
+			if (Target.Platform == UnrealTargetPlatform.Android)
+			{
+				PrivateDependencyModuleNames.AddRange(new string[] { "Launch" });
+				PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "AndroidPermission" });
+				AdditionalPropertiesForReceipt.Add("AndroidPlugin", Path.Combine(PlatformExtensionsPath, "Android", "uplx.xml"));
+			}
+    }
 }
