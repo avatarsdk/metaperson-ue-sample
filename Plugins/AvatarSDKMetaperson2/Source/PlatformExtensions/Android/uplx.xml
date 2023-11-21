@@ -23,14 +23,17 @@
 	                  dst="$S(BuildDir)/libs/armeabi-v7a/libassimp.so" />
 		</isArch>
 		 <copyDir src="$S(PluginDir)/xml"
-          dst = "$S(BuildDir)/res/xml" />   
+          dst = "$S(BuildDir)/res/xml" />
+		<copyFile src="$S(PluginDir)/WebViewControl.java"
+	                  dst="$S(BuildDir)/java/com/epicgames/unreal/WebViewControl.java" />
 	</resourceCopies>
 	
 	<androidManifestUpdates>
 	 <addPermission android:name="android.permission.CAMERA"/> 
  	 <addPermission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />	  
 	 <addPermission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-	 
+	 <addfeature android:name="android.hardware.camera" />
+	 <addfeature android:name="android.hardware.camera.autofocus" />	
 	 <setElement result="Provider" value="provider" />
      <addAttribute tag="$Provider" name="android:name" value="androidx.core.content.FileProvider" />
      <addAttribute tag="$Provider" name="android:authorities" value="com.avatarsdk.android.fileprovider" />
@@ -77,6 +80,11 @@
 			if(resultCode == RESULT_OK)
 			{
 				Uri selectedImage = data.getData();
+				
+				Uri [] arr = new Uri[1];
+				arr[0] = selectedImage;
+				filePathCallback.onReceiveValue(arr);
+				
 				String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
 				Cursor cursor = getContentResolver().query(selectedImage,
@@ -106,8 +114,16 @@
 		
 		public String ImagePath = "None";
 		private File photoFile = null;
-
-
+	
+		ValueCallback&lt;Uri[]&gt; filePathCallback;
+		
+		public void AndroidThunkJava_OpenGalleryWithCallback()
+		{
+			this.filePathCallback = filePathCallback;
+			Intent GalleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+			startActivityForResult(GalleryIntent, RESULT_LOAD_IMAGE);
+		}
+		
 		public void AndroidThunkJava_OpenGallery()
 		{
 			 Intent GalleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);

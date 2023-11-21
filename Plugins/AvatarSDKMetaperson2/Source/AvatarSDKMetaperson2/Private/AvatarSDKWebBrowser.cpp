@@ -11,6 +11,7 @@
 #include "AvatarSDKWebBrowser.h"
 #include "AvatarSDKMetaperson2.h"
 #include "AvatarSDKRuntimeSettings.h"
+#include <AndroidUtils.h>
 
 UAvatarSDKWebBrowser::UAvatarSDKWebBrowser() {
     ReadParametersFromSettings = true;
@@ -42,9 +43,14 @@ void UAvatarSDKWebBrowser::Init()
     }
     
     WebBrowserWidget->BindUObject(ProxyObjectName, CallbackProxy);
+    this->bSupportsTransparency = true;
 
-#if PLATFORM_ANDROID
-    ExecuteJavascript(GetJavascriptCodeMobile());	
+
+    
+#if PLATFORM_ANDROID    
+    {        
+        ExecuteJavascript(GetJavascriptCodeMobile());
+    }    
 #else 
     ExecuteJavascript(GetJavascriptCodeDesktop());
 #endif
@@ -90,6 +96,12 @@ FString UAvatarSDKWebBrowser::GetJavascriptCode(const FString& EventName) const
         "'textureProfile' : '1K.png'"
         "};"
         "evt.source.postMessage(exportParametersMessage, '*');"
+
+        "let uiMessage = {"
+        "'eventName': 'set_ui_parameters',"
+        "'theme': 'light'"
+        "};"
+        "evt.source.postMessage(uiMessage, '*');"
 
         "}"
         "window.addEventListener('message', onWindowMessage);"

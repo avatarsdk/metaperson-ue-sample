@@ -9,7 +9,7 @@
  */
 
 #include "AvatarSDKUtilsLibrary.h"
-
+#include "AndroidUtils.h"
 FString UAvatarSDKUtilsLibrary::GetCommonDataFolder()
 {
 #if PLATFORM_ANDROID

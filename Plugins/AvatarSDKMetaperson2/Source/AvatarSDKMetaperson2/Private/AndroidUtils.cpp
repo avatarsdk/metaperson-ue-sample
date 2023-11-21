@@ -23,10 +23,10 @@ UAndroidUtils::UAndroidUtils()
 #if PLATFORM_ANDROID
 	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv())
 	{
-		OpenGalleryJMethod = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_OpenGallery", "()V", false);
-		GetImagePathJMethod = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_GetImagePath", "()Ljava/lang/String;", false);
+		//OpenGalleryJMethod = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_OpenGallery", "()V", false);
+		//GetImagePathJMethod = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_GetImagePath", "()Ljava/lang/String;", false);
 		GetPersistentDataPathJMethod = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_GetPersistentDataPath", "()Ljava/lang/String;", false);
-		TakeCameraImageJMethod = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_TakeCameraPhoto", "()V", false);
+		//TakeCameraImageJMethod = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "AndroidThunkJava_TakeCameraPhoto", "()V", false);
 	}
 #endif
 

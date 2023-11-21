@@ -36,7 +36,7 @@ public:
 		void OpenGalleryAsync();
 	void TakeCameraImageAsync();
 	FString GetPersistentDataPath();
-
+	bool CheckPermissions();
 #if PLATFORM_ANDROID
 	void OnActivityResult(
 		JNIEnv* jenv,
@@ -54,6 +54,6 @@ private:
 	jmethodID GetPersistentDataPathJMethod;
 	jmethodID GetImagePathJMethod;
 	jmethodID TakeCameraImageJMethod;
-	bool CheckPermissions();
+	
 #endif
 };
