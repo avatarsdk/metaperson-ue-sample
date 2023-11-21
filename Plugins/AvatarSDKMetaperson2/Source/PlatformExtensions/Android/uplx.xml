@@ -96,15 +96,27 @@
 				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 				ImagePath = cursor.getString(columnIndex);
 				cursor.close();
+			} else {
+				if(filePathCallback != null){
+					filePathCallback.onReceiveValue(null);
+				}
 			}
 		} 
 		else if(requestCode == RESULT_PHOTO_TAKEN)
 		{
-			ImagePath = photoFile.getPath();
-			if(imageTakenCallback != null){
-				Uri [] res = new Uri[1];
-				res[0] = ImageUri;
-				imageTakenCallback.onReceiveValue(res);
+			if(resultCode != RESULT_OK)
+			{
+				if(filePathCallback != null){
+					filePathCallback.onReceiveValue(null);
+				}
+			}
+			else{
+				ImagePath = photoFile.getPath();
+				if(imageTakenCallback != null){
+					Uri [] res = new Uri[1];
+					res[0] = ImageUri;
+					imageTakenCallback.onReceiveValue(res);
+				}
 			}
 		}
 		</insert>
