@@ -1697,28 +1697,21 @@ class WebViewControl
 		@Override
 		public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback,
 										 FileChooserParams fileChooserParams) {
-
-			_activity.AndroidThunkJava_OpenGalleryWithCallback(filePathCallback);
-
-			//_activity.ImagePath = "/storage/emulated/0/Pictures/fromCamera (3).jpeg";
-			//_activity.ImagePath = "content://com.android.providers.media.documents/document/image%3A1000010479";
- 			//Uri[] res = new Uri[1];
-			//res[0]  = (Uri.parse(_activity.ImagePath));
-			//res[0]  = _activity.ImageUri;
-			//filePathCallback.onReceiveValue(res);
+			if(fileChooserParams.isCaptureEnabled()){
+				_activity.AndroidThunkJava_TakeCameraPhotoWithCallback(filePathCallback);
+			} else{
+				_activity.AndroidThunkJava_OpenGalleryWithCallback(filePathCallback);
+			}
 			return true;
 		}
-
-
-
-
+		
 		@Override
 		public void onPermissionRequest(final PermissionRequest request) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 				request.grant(request.getResources());
 			}
 		}
-				@Override
+		@Override
 		public boolean onCreateWindow(WebView View, boolean isDialog, boolean isUserGesture, Message resultMsg)
 		{
 			WebView newView = new WebView(GameActivity._activity);

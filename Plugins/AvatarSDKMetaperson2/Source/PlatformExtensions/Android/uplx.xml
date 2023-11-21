@@ -100,9 +100,11 @@
 		} 
 		else if(requestCode == RESULT_PHOTO_TAKEN)
 		{
-			if(resultCode == RESULT_OK)
-			{
-				ImagePath = photoFile.getPath();
+			ImagePath = photoFile.getPath();
+			if(imageTakenCallback != null){
+				Uri [] res = new Uri[1];
+				res[0] = ImageUri;
+				imageTakenCallback.onReceiveValue(res);
 			}
 		}
 		</insert>
@@ -116,8 +118,12 @@
 		
 		public String ImagePath = "None";
 		private File photoFile = null;
+		public Uri ImageUri;
+
 	
 		ValueCallback&lt;Uri[]&gt; filePathCallback;
+		ValueCallback&lt;Uri[]&gt; imageTakenCallback;
+
 		
 		public void AndroidThunkJava_OpenGalleryWithCallback(ValueCallback&lt;Uri[]&gt; filePathCallback)
 		{
@@ -190,6 +196,34 @@
 		Log.debug("=== Activity started ===");
 	 
       }
+	  
+	public void AndroidThunkJava_TakeCameraPhotoWithCallback(ValueCallback&lt;Uri[]&gt; imageTakenCallback)
+	{
+		this.imageTakenCallback = imageTakenCallback;
+		Log.debug("=== AndroidThunkJava_TakeCameraPhoto ===");
+		Context context = getApplicationContext();
+
+		try
+		{
+			photoFile = createImageFile();
+		} catch (IOException ex)
+		{
+			Log.debug("=== IOException creating image ===");
+			return;
+		}
+
+		Uri photoUri = FileProvider.getUriForFile(this, "com.avatarsdk.android.fileprovider", photoFile);
+		Log.debug("=== Created photo Uri ===");
+
+
+		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		Log.debug("=== Created Intent ===");
+		ImageUri = photoUri;
+		takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+		startActivityForResult(takePictureIntent, RESULT_PHOTO_TAKEN);
+		Log.debug("=== Activity started ===");
+
+	}
 		
 		 
 		</insert>
