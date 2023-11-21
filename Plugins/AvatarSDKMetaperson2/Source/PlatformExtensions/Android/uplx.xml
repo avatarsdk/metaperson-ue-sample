@@ -24,10 +24,12 @@
 		</isArch>
 		 <copyDir src="$S(PluginDir)/xml"
           dst = "$S(BuildDir)/res/xml" />
-		<copyFile src="$S(PluginDir)/WebViewControl.java"
-	                  dst="$S(BuildDir)/java/com/epicgames/unreal/WebViewControl.java" />
+		
 	</resourceCopies>
-	
+	<gradleCopies>
+		<copyFile src="$S(PluginDir)/WebViewControl.java"
+	                  dst="$S(BuildDir)/gradle/app/src/main/java/com/epicgames/unreal/WebViewControl.java" />
+	</gradleCopies>
 	<androidManifestUpdates>
 	 <addPermission android:name="android.permission.CAMERA"/> 
  	 <addPermission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />	  
@@ -66,7 +68,7 @@
 		import androidx.core.content.ContextCompat;
 		import androidx.core.content.FileProvider;
 		import android.Manifest;
-
+		import android.webkit.ValueCallback;
 
 
 		</insert>
@@ -117,7 +119,7 @@
 	
 		ValueCallback&lt;Uri[]&gt; filePathCallback;
 		
-		public void AndroidThunkJava_OpenGalleryWithCallback()
+		public void AndroidThunkJava_OpenGalleryWithCallback(ValueCallback&lt;Uri[]&gt; filePathCallback)
 		{
 			this.filePathCallback = filePathCallback;
 			Intent GalleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -192,4 +194,5 @@
 		 
 		</insert>
 	</gameActivityClassAdditions>
+	
 </root>
