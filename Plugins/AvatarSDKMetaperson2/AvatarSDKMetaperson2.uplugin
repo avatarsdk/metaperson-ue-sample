@@ -18,7 +18,20 @@
 		{
 			"Name": "AvatarSDKMetaperson2",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"Win64"
+
+			]
+		},
+		{
+			"Name": "glTFRuntime",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"Win64",
+				"Android"
+			]
 		},
 		{
 			"Name": "MinizWrapper",
@@ -31,11 +44,6 @@
 		{
 			"Name": "WebBrowserWidget",
 			"Enabled": true
-		},
-		{
-			"Name": "glTFRuntime",
-			"Enabled": true,
-			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/d2ed3709933d4608a3a8dd746cbc045d"
 		}
 	]
 }

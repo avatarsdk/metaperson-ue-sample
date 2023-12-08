@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.0",
+	"EngineAssociation": "5.1",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -23,9 +23,8 @@
 			"Enabled": true
 		},
 		{
-			"Name": "glTFRuntime",
-			"Enabled": true,
-			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/d2ed3709933d4608a3a8dd746cbc045d"
+			"Name": "AvatarSDKMetaperson2",
+			"Enabled": true
 		}
 	]
 }
