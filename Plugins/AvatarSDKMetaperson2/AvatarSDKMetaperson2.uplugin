@@ -1,15 +1,15 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "1.0",
-	"FriendlyName": "Avatar SDK Metaperson 2",
-	"Description": "",
-	"Category": "Other",
-	"CreatedBy": "",
-	"CreatedByURL": "",
-	"DocsURL": "",
+	"VersionName": "1.0.0",
+	"FriendlyName": "Avatar SDK Metaperson Plugin",
+	"Description": "Create realistic 3D avatars and load them at runtime",
+	"Category": "Metaverse",
+	"CreatedBy": "itSeez3D",
+	"CreatedByURL": "https://avatarsdk.com/",
+	"DocsURL": "https://ue-docs.metaperson.avatarsdk.com/",
 	"MarketplaceURL": "",
-	"SupportURL": "",
+	"SupportURL": "support@avatarsdk.com",
 	"CanContainContent": true,
 	"IsBetaVersion": false,
 	"IsExperimentalVersion": false,
@@ -21,7 +21,6 @@
 			"LoadingPhase": "Default",
 			"PlatformAllowList": [
 				"Win64"
-
 			]
 		},
 		{
@@ -37,7 +36,10 @@
 			"Name": "MinizWrapper",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
-			"WhitelistPlatforms": [ "Win64", "Android" ]
+			"PlatformAllowList": [
+				"Win64",
+				"Android"
+			]
 		}
 	],
 	"Plugins": [
