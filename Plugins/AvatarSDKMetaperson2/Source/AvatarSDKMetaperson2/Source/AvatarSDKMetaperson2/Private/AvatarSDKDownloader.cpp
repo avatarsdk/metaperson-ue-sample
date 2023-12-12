@@ -14,6 +14,7 @@
 #include "ZipHelper.h"
 #include "HAL/PlatformFilemanager.h"
 #include "Materials/Material.h"
+#include "Misc/FileHelper.h"
 
 
 void UAvatarSDKDownloader::DownloadFileByUrl(const FString& Url, FOnAvatarDownloaded OnAvatarDonwnloaded, FOnAvatarDownloadProgress OnAvatarDonwnloadProgress) {
