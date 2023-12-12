@@ -28,7 +28,7 @@ class AVATARSDKMETAPERSON2_API AMetaperson2Character : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "AvatarSDK|Metaperson 2")
 	UAvatarSDKComponent* AvatarSDKComponent;
 public:
 	AMetaperson2Character();

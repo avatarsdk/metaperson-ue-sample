@@ -33,7 +33,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnAvatarLoaded OnAvatarLoaded;
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "AvatarSDK|Metaperson 2")
 	void DownloadAvatar(const FString& Url);
 
 	UPROPERTY(BlueprintAssignable)
