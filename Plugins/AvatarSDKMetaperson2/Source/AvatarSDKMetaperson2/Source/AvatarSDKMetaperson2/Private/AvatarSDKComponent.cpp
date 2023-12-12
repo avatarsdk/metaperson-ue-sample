@@ -9,6 +9,7 @@
  */
 
 #include "AvatarSDKComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 
 
 UAvatarSDKComponent::UAvatarSDKComponent()

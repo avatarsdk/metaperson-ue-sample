@@ -12,6 +12,9 @@
 #include "AvatarSDKUtilsLibrary.h"
 #include "Http.h"
 #include "ZipHelper.h"
+#include "HAL/PlatformFilemanager.h"
+#include "Materials/Material.h"
+
 
 void UAvatarSDKDownloader::DownloadFileByUrl(const FString& Url, FOnAvatarDownloaded OnAvatarDonwnloaded, FOnAvatarDownloadProgress OnAvatarDonwnloadProgress) {
 	UE_LOG(LogMetaperson2, Log, TEXT("UAvatarSDKDownloader: DownloadFileByUrl: Url: "), *Url);
