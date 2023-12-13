@@ -28,8 +28,7 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"PlatformAllowList": [
-				"Win64",
-				"Android"
+				"Win64"
 			]
 		},
 		{
@@ -37,8 +36,7 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"PlatformAllowList": [
-				"Win64",
-				"Android"
+				"Win64"
 			]
 		}
 	],
