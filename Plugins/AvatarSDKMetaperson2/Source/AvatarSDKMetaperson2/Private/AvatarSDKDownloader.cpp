@@ -33,8 +33,8 @@ void UAvatarSDKDownloader::DownloadFileByUrl(const FString& Url, FOnAvatarDownlo
 			{
 				int32 totalSize = HttpResponse->GetContentLength();
 				float progress = ((float)receivedSize / (float)totalSize) * 100;
-				UE_LOG(LogMetaperson2, Warning, TEXT("Download progress = %.2f%"), progress);
-				OnAvatarDonwnloadProgress.Broadcast((int32)progress);
+                UE_LOG(LogMetaperson2, Warning, TEXT("Download progress = %.2f%%"), progress);
+                OnAvatarDonwnloadProgress.Broadcast((int32)progress);
 			}
 			});
 	}
