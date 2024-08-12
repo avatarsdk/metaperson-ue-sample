@@ -16,7 +16,7 @@ public class Metaperson2EditorTarget : TargetRules
 	public Metaperson2EditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
+		DefaultBuildSettings = BuildSettingsVersion.Latest;
 		ExtraModuleNames.Add("Metaperson2");
 	}
 }
