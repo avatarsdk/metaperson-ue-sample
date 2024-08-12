@@ -9,6 +9,8 @@
  */
 
 #include "AvatarSDKLoader.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Materials/Material.h"
 
 
 void UAvatarSDKLoader::LoadAvatarAsync(const FString& GlbPath, USkeletalMeshComponent* InSkeletalMeshComponent, FOnAvatarLoaded AvatarLoadedDelegate)

@@ -15,6 +15,7 @@
 #include "HAL/PlatformFilemanager.h"
 #include "Materials/Material.h"
 #include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
 
 
 void UAvatarSDKDownloader::DownloadFileByUrl(const FString& Url, FOnAvatarDownloaded OnAvatarDonwnloaded, FOnAvatarDownloadProgress OnAvatarDonwnloadProgress) {
