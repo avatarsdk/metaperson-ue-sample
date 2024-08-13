@@ -16,7 +16,7 @@ public class Metaperson2Target : TargetRules
 	public Metaperson2Target(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.Add("Metaperson2");
+		DefaultBuildSettings = BuildSettingsVersion.Latest;
+        ExtraModuleNames.Add("Metaperson2");
 	}
 }
