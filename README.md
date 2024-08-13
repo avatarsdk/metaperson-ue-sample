@@ -6,7 +6,7 @@ Watch also the [video tutorial on Youtube](https://www.youtube.com/watch?v=LslWA
 ## Getting Started
 You need to complete the following steps before experimenting with this sample:
 
-* Install UE5.x and Visual Studio 2022
+* Install UE5.2 (or newer) and Visual Studio 2022
 * Get an AvatarSDK developer account at https://accounts.avatarsdk.com/developer/signup/
 * Create an application with Client credentials Authorization Grant at https://accounts.avatarsdk.com/developer/
 * Copy the `App Client ID` and `App Client Secret` from the Client Access application at https://accounts.avatarsdk.com/developer/
