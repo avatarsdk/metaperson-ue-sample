@@ -16,6 +16,7 @@ UAvatarSDKComponent::UAvatarSDKComponent()
 {
 }
 
+
 void UAvatarSDKComponent::LoadAvatar(const FString& ModelPath)
 {
 	if (!CheckSkeletalMesh()) {

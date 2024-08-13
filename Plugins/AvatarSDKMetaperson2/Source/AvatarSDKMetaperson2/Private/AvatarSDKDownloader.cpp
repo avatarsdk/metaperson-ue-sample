@@ -15,7 +15,8 @@
 #include "HAL/PlatformFilemanager.h"
 #include "Materials/Material.h"
 #include "Misc/FileHelper.h"
-
+#include "Misc/Paths.h"
+#include "Misc/EngineVersionComparison.h"
 
 void UAvatarSDKDownloader::DownloadFileByUrl(const FString& Url, FOnAvatarDownloaded OnAvatarDonwnloaded, FOnAvatarDownloadProgress OnAvatarDonwnloadProgress) {
 	UE_LOG(LogMetaperson2, Log, TEXT("UAvatarSDKDownloader: DownloadFileByUrl: Url: "), *Url);
@@ -26,15 +27,20 @@ void UAvatarSDKDownloader::DownloadFileByUrl(const FString& Url, FOnAvatarDownlo
 	if (OnAvatarDonwnloadProgress.IsBound())
 	{
 		UE_LOG(LogMetaperson2, Log, TEXT("UAvatarSDKDownloader: DownloadFileByUrl: Progress will be handled"));
-		Request->OnRequestProgress().BindLambda([this, OnAvatarDonwnloadProgress](FHttpRequestPtr HttpRequest, int32 BytesSend, int32 InBytesReceived) {
+        #if UE_VERSION_OLDER_THAN(5, 4, 0)
+        auto& Delegate = Request->OnRequestProgress();        
+        #else
+        auto& Delegate = Request->OnRequestProgress64();
+        #endif
+		Delegate.BindLambda([this, OnAvatarDonwnloadProgress](FHttpRequestPtr HttpRequest, int32 BytesSend, int32 InBytesReceived) {
 			int32 receivedSize = InBytesReceived;
 			FHttpResponsePtr HttpResponse = HttpRequest->GetResponse();
 			if (HttpResponse.IsValid())
 			{
 				int32 totalSize = HttpResponse->GetContentLength();
 				float progress = ((float)receivedSize / (float)totalSize) * 100;
-				UE_LOG(LogMetaperson2, Warning, TEXT("Download progress = %.2f%"), progress);
-				OnAvatarDonwnloadProgress.Broadcast((int32)progress);
+                UE_LOG(LogMetaperson2, Warning, TEXT("Download progress = %.2f%%"), progress);
+                OnAvatarDonwnloadProgress.Broadcast((int32)progress);
 			}
 			});
 	}
