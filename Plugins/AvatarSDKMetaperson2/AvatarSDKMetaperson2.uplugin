@@ -1,7 +1,7 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "1.0.0",
+	"VersionName": "1.0.1",
 	"FriendlyName": "Avatar SDK Metaperson Plugin",
 	"Description": "Create realistic 3D avatars and load them at runtime",
 	"Category": "Avatar SDK",
