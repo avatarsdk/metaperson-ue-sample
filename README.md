@@ -28,7 +28,7 @@ Inside the application:
 ![Exporting model](./Images/exporting_model.gif "Exporting model")
 
 ## Documentation
-You can find the documentation for the sample at https://ue-docs.metaperson.avatarsdk.com/
+You can find the documentation for the sample at https://docs.metaperson.avatarsdk.com/business-integration/ue/github_sample
 
 ## Support
 If you have any questions or issues with the sample, please contact us <support@avatarsdk.com>.
