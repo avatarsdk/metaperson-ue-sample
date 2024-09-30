@@ -44,6 +44,7 @@ void UAvatarSDKLoader::LoadAvatarAsync(const FString& GlbPath, USkeletalMeshComp
 	FglTFRuntimeSkeletalMeshConfig SkeletalMeshConfig;
 	SkeletalMeshConfig.MorphTargetsDuplicateStrategy = EglTFRuntimeMorphTargetsDuplicateStrategy::Merge;
 	SkeletalMeshConfig.SkeletonConfig = SkeletonConfig;	
+	SkeletalMeshConfig.NormalsGenerationStrategy = EglTFRuntimeNormalsGenerationStrategy::IfMissing;
 	SkeletalMeshConfig.Skeleton = Skeleton;
 	
 
@@ -84,6 +85,13 @@ FglTFRuntimeMaterialsConfig UAvatarSDKLoader::GetRuntimeMaterialsConfig()
 	auto HairMaterial = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), nullptr, *HairMaterialPath));
 	check(IsValid(HairMaterial));
 	MaterialsOverrideByNameMap.Add(TEXT("haircut"), HairMaterial);
+	
+	FString CorneaMaterialPath = TEXT("/AvatarSDKMetaperson2/Materials/Eyes/Cornea");
+	auto CorneaMaterial = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), nullptr, *CorneaMaterialPath));
+	check(IsValid(HairMaterial));
+	MaterialsOverrideByNameMap.Add(TEXT("AvatarLeftCornea"), CorneaMaterial);
+	MaterialsOverrideByNameMap.Add(TEXT("AvatarRightCornea"), CorneaMaterial);
+	
 	Result.MaterialsOverrideByNameMap = MaterialsOverrideByNameMap;
 
 	return Result;
