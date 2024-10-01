@@ -24,6 +24,14 @@
 			]
 		},
 		{
+			"Name": "AvatarSDKMetaperson2Editor",
+			"Type": "Editor",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"Win64"
+			]
+		},
+		{
 			"Name": "glTFRuntime",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
