@@ -50,6 +50,8 @@ void UAvatarSDKLoader::LoadAvatarAsync(const FString& GlbPath, USkeletalMeshComp
 
 	SkeletalMeshConfig.MaterialsConfig = GetRuntimeMaterialsConfig();
 	//SkeletalMeshConfig.SaveToPackage = TEXT("/Game/ExportedMesh");
+	FglTFRuntimeImagesConfig ImagesConfig;
+
 	GltfRuntimeAsset->LoadSkeletalMeshRecursiveAsync("", ExcludeNodes, GlTFRuntimeSkeletalMeshDelegate, SkeletalMeshConfig);
 }
 
@@ -86,13 +88,67 @@ FglTFRuntimeMaterialsConfig UAvatarSDKLoader::GetRuntimeMaterialsConfig()
 	check(IsValid(HairMaterial));
 	MaterialsOverrideByNameMap.Add(TEXT("haircut"), HairMaterial);
 	
-	FString CorneaMaterialPath = TEXT("/AvatarSDKMetaperson2/Materials/Eyes/Cornea");
-	auto CorneaMaterial = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), nullptr, *CorneaMaterialPath));
-	check(IsValid(HairMaterial));
-	MaterialsOverrideByNameMap.Add(TEXT("AvatarLeftCornea"), CorneaMaterial);
-	MaterialsOverrideByNameMap.Add(TEXT("AvatarRightCornea"), CorneaMaterial);
+	TArray<FString> AssoiciatedImages;
+	
+	auto alphaMode = GetMaterialProperty(GltfRuntimeAsset, "AvatarLeftCornea", "alphaMode");
+
+	if (alphaMode == "BLEND") //recolor eyes
+	{
+		FString CorneaMaterialPath = TEXT("/AvatarSDKMetaperson2/Materials/Eyes/Cornea");
+		auto CorneaMaterial = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), nullptr, *CorneaMaterialPath));
+		check(IsValid(CorneaMaterial));
+		MaterialsOverrideByNameMap.Add(TEXT("AvatarLeftCornea"), CorneaMaterial);
+		MaterialsOverrideByNameMap.Add(TEXT("AvatarRightCornea"), CorneaMaterial);
+	}
 	
 	Result.MaterialsOverrideByNameMap = MaterialsOverrideByNameMap;
 
 	return Result;
+}
+
+FString UAvatarSDKLoader::GetMaterialProperty(UglTFRuntimeAsset* InGltfRuntimeAsset, const FString &MatName, const FString &PropName)
+{
+	TArray<FglTFRuntimePathItem> Path;
+	FglTFRuntimePathItem PathElement0;
+	FglTFRuntimePathItem PathElement1;
+	FglTFRuntimePathItem PathElement2;
+	FglTFRuntimePathItem PathElement3;
+
+	PathElement0.Path = "materials";
+	bool IsFound;
+	Path.Add(PathElement0);
+
+	if (!InGltfRuntimeAsset) {
+		return "";
+	}
+	int ElementsNum = InGltfRuntimeAsset->GetArraySizeFromPath(Path, IsFound);
+	if (!IsFound) {
+		return "";
+	}
+ 
+	Path.Empty();
+	PathElement1.Path = "materials";
+	PathElement1.Index = 0;
+	PathElement2.Path = "name";
+	Path.Add(PathElement1);
+	Path.Add(PathElement2);
+	
+	int MaterialIndex = -1;
+	int MaterialPropertiesNum = -1;
+	for (int ElementIdx = 0; ElementIdx < ElementsNum; ElementIdx++)
+	{
+		Path[0].Index = ElementIdx;
+		auto MaterialStr = InGltfRuntimeAsset->GetStringFromPath(Path, IsFound);
+		if (IsFound && MaterialStr.Contains(MatName)) {
+			MaterialIndex = ElementIdx;
+			Path.Empty();
+			PathElement1.Path = "materials";
+			PathElement1.Index = ElementIdx;
+			Path.Add(PathElement1);
+			PathElement2.Path = PropName;
+			Path.Add(PathElement2);
+			return InGltfRuntimeAsset->GetStringFromPath(Path, IsFound);
+		}
+	}
+	return "";
 }

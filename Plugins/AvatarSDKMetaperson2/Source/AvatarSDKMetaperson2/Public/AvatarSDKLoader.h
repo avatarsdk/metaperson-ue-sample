@@ -43,7 +43,9 @@ protected:
 	USkeleton* Skeleton;
 protected:
 	FglTFRuntimeMaterialsConfig GetRuntimeMaterialsConfig();
-	
+	FString GetMaterialProperty(UglTFRuntimeAsset* InGltfRuntimeAsset, const FString& MatName, const FString& PropName);
+
+
 	UPROPERTY()
 	TMap<FString, UMaterialInterface*> MaterialsOverrideByNameMap;
 };
