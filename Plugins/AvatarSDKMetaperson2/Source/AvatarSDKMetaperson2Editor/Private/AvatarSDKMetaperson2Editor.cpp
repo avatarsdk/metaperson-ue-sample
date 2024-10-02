@@ -10,19 +10,85 @@
 
 #include "AvatarSDKMetaperson2Editor.h"
 #include "Developer/Settings/Public/ISettingsModule.h"
+#include "AvatarSDKMetaperson2Import.h"
+#include "AvatarSDK2MetapersonStyle.h"
+#include "AvatarSDKMetaperson2Commands.h"
 
+static const FName TabName("AvatarSDKMetaperson2");
 
 #define LOCTEXT_NAMESPACE "FAvatarSDKMetaperson2EditorModule"
 
 void FAvatarSDKMetaperson2EditorModule::StartupModule()
 {
-	 
-}
+	FAvatarSDK2MetapersonStyle::Initialize();
+	FAvatarSDK2MetapersonStyle::ReloadTextures();
+
+	FAvatarSDKMetaperson2Commands::Register();
+
+	PluginCommands = MakeShareable(new FUICommandList);
+
+	PluginCommands->MapAction(
+		FAvatarSDKMetaperson2Commands::Get().OpenPluginWindow,
+		FExecuteAction::CreateRaw(this, &FAvatarSDKMetaperson2EditorModule::PluginButtonClicked),
+		FCanExecuteAction());
+
+
+	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FAvatarSDKMetaperson2EditorModule::RegisterMenus));
+
+	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(TabName, FOnSpawnTab::CreateRaw(this, &FAvatarSDKMetaperson2EditorModule::OnSpawnPluginTab))
+		.SetDisplayName(LOCTEXT("FAvatarSdkRaTabTitle", "Avatar SDK Realistic Animation"))
+		.SetMenuType(ETabSpawnerMenuType::Hidden);
+ }
 
 void FAvatarSDKMetaperson2EditorModule::ShutdownModule()
 {
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
-	// we call this function before unloading the module.
+	UToolMenus::UnRegisterStartupCallback(this);
+
+	UToolMenus::UnregisterOwner(this);
+
+	FAvatarSDK2MetapersonStyle::Shutdown();
+
+	FAvatarSDKMetaperson2Commands::Unregister();
+
+	FGlobalTabmanager::Get()->UnregisterNomadTabSpawner(TabName);
+}
+
+void FAvatarSDKMetaperson2EditorModule::PluginButtonClicked()
+{
+	FGlobalTabmanager::Get()->TryInvokeTab(TabName);
+
+}
+
+void FAvatarSDKMetaperson2EditorModule::RegisterMenus()
+{
+	// Owner will be used for cleanup in call to UToolMenus::UnregisterOwner
+	FToolMenuOwnerScoped OwnerScoped(this);
+
+	{
+		UToolMenu* Menu = UToolMenus::Get()->ExtendMenu("LevelEditor.MainMenu.Window");
+		{
+			FToolMenuSection& Section = Menu->FindOrAddSection("WindowLayout");
+			Section.AddMenuEntryWithCommandList(FAvatarSDKMetaperson2Commands::Get().OpenPluginWindow, PluginCommands);
+		}
+	}
+
+	{
+		UToolMenu* ToolbarMenu = UToolMenus::Get()->ExtendMenu("LevelEditor.LevelEditorToolBar");
+		{
+			FToolMenuSection& Section = ToolbarMenu->FindOrAddSection("Settings");
+			{
+				FToolMenuEntry& Entry = Section.AddEntry(FToolMenuEntry::InitToolBarButton(FAvatarSDKMetaperson2Commands::Get().OpenPluginWindow));
+				Entry.SetCommandList(PluginCommands);
+			}
+		}
+	}
+}
+
+TSharedRef<class SDockTab> FAvatarSDKMetaperson2EditorModule::OnSpawnPluginTab(const FSpawnTabArgs& SpawnTabArgs)
+{
+	return SNew(SDockTab)[
+		SNew(SAvatarSDKMetaperson2Import)
+	];
 }
 
 #undef LOCTEXT_NAMESPACE

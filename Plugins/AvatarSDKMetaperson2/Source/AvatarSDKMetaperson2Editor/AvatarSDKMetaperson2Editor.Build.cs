@@ -47,7 +47,9 @@ public class AvatarSDKMetaperson2Editor : ModuleRules
                 "LevelEditor",
                 "glTFRuntime",
                 "DesktopPlatform",
-                "EditorStyle"
+                "EditorStyle",
+                "Projects",
+                "ToolMenus",
                
 				// ... add private dependencies that you statically link with here ...	
 			}
