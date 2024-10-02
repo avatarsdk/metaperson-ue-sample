@@ -2,7 +2,7 @@
 
 #include "AvatarSDKMetaperson2Commands.h"
 
-#define LOCTEXT_NAMESPACE "FAvatarSdkRaModule"
+#define LOCTEXT_NAMESPACE "FAvatarSDKMetaperson2EditorModule"
 
 void FAvatarSDKMetaperson2Commands::RegisterCommands()
 {
