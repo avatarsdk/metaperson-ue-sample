@@ -50,7 +50,11 @@ public class AvatarSDKMetaperson2Editor : ModuleRules
                 "EditorStyle",
                 "Projects",
                 "ToolMenus",
-               
+                "glTFRuntimeFBX",
+                "TransientObjectSaver",
+                "RuntimeSkeletalMeshGenerator",
+                "SkeletalMeshUtilitiesCommon",
+              
 				// ... add private dependencies that you statically link with here ...	
 			}
             );
