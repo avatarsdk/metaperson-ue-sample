@@ -890,9 +890,12 @@ void FixMesh(USkeletalMesh* mesh, USkeleton* Skeleton) {
     FString NewSkeletonName = TEXT("new_skeleton");
     UPackage* NewPackage = CreatePackage(*NewPackageName);
     USkeleton* NewSkeleton = NewObject<USkeleton>(NewPackage, *NewSkeletonName, RF_Public | RF_Standalone);
-    SkeletonAddBone(NewSkeleton, "root", -1, FTransform::Identity); 
 
     auto boneTransforms = skeleton->GetReferenceSkeleton().GetRefBonePose();
+    auto hipsBoneTransform = boneTransforms[0];
+    boneTransforms[0] = FTransform::Identity;
+    SkeletonAddBone(NewSkeleton, "root", -1, hipsBoneTransform);
+
     
     
     for (int32 index = 0; index < skeleton->GetReferenceSkeleton().GetNum(); index++)
