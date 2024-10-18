@@ -917,7 +917,8 @@ void FixMesh(USkeletalMesh* mesh, USkeleton* Skeleton) {
         SkeletonAddBone(NewSkeleton, TCHAR_TO_UTF8(*boneName.ToString()), newBoneParent, boneTransform);        
     }
 
-    SkeletalMeshSetSkeleton(newMesh, Skeleton);
+    //SkeletalMeshSetSkeleton(newMesh, Skeleton);
+    SkeletalMeshSetSkeleton(newMesh, NewSkeleton);
     FixSkeletalMeshImportData(newMesh, mesh->Skeleton);
     FixBonesInfluences(newMesh, mesh->Skeleton);
     /*TArray<FSoftSkinVertex> soft_vertices;
