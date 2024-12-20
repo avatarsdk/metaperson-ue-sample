@@ -197,7 +197,12 @@ void AddRootBoneToSkeletalMesh(USkeletalMesh* SkeletalMesh, USkeleton* Skeleton)
         FReferenceSkeletonModifier RefSkeletonModifier(RefSkeleton, nullptr);
 
         FMeshBoneInfo NewRootBoneInfo(FName(TEXT("root")), TEXT("root"), INDEX_NONE);
-        FTransform NewRootBoneTransform(FQuat::Identity, FVector::ZeroVector, FVector::OneVector);
+
+        //FVector3d Sca(100.0,100.0,100.0);
+        FVector3d Sca(1.0, 1.0, 1.0);
+        FTransform NewRootBoneTransform(FQuat::Identity, FVector::ZeroVector, Sca);
+        //FQuat Rot;
+        //NewRootBoneTransform.SetRotation(Rot);
         RefSkeletonModifier.Add(NewRootBoneInfo, NewRootBoneTransform);
 
 
@@ -205,6 +210,7 @@ void AddRootBoneToSkeletalMesh(USkeletalMesh* SkeletalMesh, USkeleton* Skeleton)
         //RefSkeleton.RebuildRefSkeleton(Skeleton, true);
         for (int i = 0; i < boneInfos.Num(); i++) {
             boneInfos[i].ParentIndex++;
+            boneTransforms[i].SetScale3D(FVector(1.0, 1.0, 1.0));
             RefSkeletonModifier.Add(boneInfos[i], boneTransforms[i]);
         }
 
@@ -880,6 +886,58 @@ void FixBonesInfluences(USkeletalMesh* Mesh, USkeleton* OldSkeleton)
 }
 
 
+void SwapBoneRotationAxis(USkeletalMesh* SkeletalMesh)
+{
+    if (!SkeletalMesh)
+    {
+        UE_LOG(LogTemp, Error, TEXT("Invalid SkeletalMesh"));
+        return;
+    }
+
+    // Get the reference skeleton
+    FReferenceSkeleton& RefSkeleton = SkeletalMesh->GetRefSkeleton();
+
+    // Iterate through each bone in the reference skeleton
+    for (int32 BoneIndex = 0; BoneIndex < RefSkeleton.GetNum(); ++BoneIndex)
+    {
+        
+        // Get the current bone transform
+        FTransform BoneTransform = RefSkeleton.GetRefBonePose()[BoneIndex];
+
+        // Get the current rotation
+        FQuat BoneRotation = BoneTransform.GetRotation();
+
+        // Swap the Y and Z axes in the rotation
+        //FQuat SwappedRotation(BoneRotation.X, BoneRotation.Z, BoneRotation.Y, BoneRotation.W);
+
+        FReferenceSkeletonModifier RefSkeletonModifier(RefSkeleton, nullptr);
+        // Set the new rotation
+        //BoneTransform.SetRotation(SwappedRotation);
+        if (RefSkeleton.GetBoneName(BoneIndex)==TEXT("Hips")) {
+            /*BoneTransform.SetScale3D(FVector(1.0, 1.0, 1.0));
+            BoneTransform.SetRotation(FQuat(0.0, 0.0, 0.0, 1.0));
+            BoneTransform.SetLocation(FVector(0.0f, -0.766, -0.002));*/
+            //(X = 0.000000, Y = -0.766339, Z = -0.002213)
+            /*auto Inv = BoneTransform.Inverse();
+            RefSkeletonModifier.UpdateRefPoseTransform(0, Inv);*/
+        }
+        else if(RefSkeleton.GetBoneName(BoneIndex) == TEXT("root")) {
+            //BoneTransform.SetRotation(FQuat::MakeFromEuler(FVector(90.0f,0.0f,0.0f)));
+            //BoneTransform.SetScale3D(FVector(100.0, 100.0, 100.0));
+            //BoneTransform.SetRotation(FQuat(90.0, 0.0, 0.0, 1.0));
+        }
+        
+        
+        // Update the bone transform in the reference skeleton
+        RefSkeletonModifier.UpdateRefPoseTransform(BoneIndex, BoneTransform);
+    }
+
+    // Mark the skeletal mesh as dirty to indicate it has been modified
+    SkeletalMesh->MarkPackageDirty();
+    SkeletalMesh->PostEditChange();
+    SkeletalMesh->Build();
+}
+
 void FixMesh(USkeletalMesh* mesh, USkeleton* Skeleton) {
 
     //USkeletalMesh* newMesh = DuplicateSkeletalMesh(mesh, TEXT("new_skeletal_mesh"), TEXT("/Game/MetapersonAvatars"));
@@ -901,7 +959,6 @@ void FixMesh(USkeletalMesh* mesh, USkeleton* Skeleton) {
         int32 boneParent = skeleton->GetReferenceSkeleton().GetParentIndex(index);
         
         auto boneTransform = boneTransforms[index];
-
         FName boneParentName;
         if (boneParent == -1)
         {
@@ -919,13 +976,18 @@ void FixMesh(USkeletalMesh* mesh, USkeleton* Skeleton) {
 
     //SkeletalMeshSetSkeleton(newMesh, Skeleton);
     SkeletalMeshSetSkeleton(newMesh, NewSkeleton);
+    SwapBoneRotationAxis(newMesh);
+
     FixSkeletalMeshImportData(newMesh, mesh->Skeleton);
     FixBonesInfluences(newMesh, mesh->Skeleton);
+    
     /*TArray<FSoftSkinVertex> soft_vertices;
     for (int i = 0; i < 14; i++) {
         SkeletalMeshSetSoftVertices(mesh, soft_vertices, 0, i);
     }*/
 }
+
+
 
 USkeletalMesh* UAvatarSDKMetaperson2ImportUtils::ImportSkeletalMesh(FString& SrcPath, FString& DstPath, bool& bOutSuccess, bool bRtMaterilas)
 {
