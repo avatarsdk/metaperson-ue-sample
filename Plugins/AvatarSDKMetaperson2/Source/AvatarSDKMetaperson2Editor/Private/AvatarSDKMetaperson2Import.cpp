@@ -3,6 +3,9 @@
 
 #include "AvatarSDKMetaperson2Import.h"
 #include "SlateOptMacros.h"
+#include "IDesktopPlatform.h"
+#include "DesktopPlatformModule.h"
+
 #include <AvatarSDKMetaperson2ImportUtils.h>
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
@@ -22,10 +25,21 @@ void SAvatarSDKMetaperson2Import::Construct(const FArguments& InArgs)
 FReply SAvatarSDKMetaperson2Import::OnLoadAnimationButtonClicked()
 {
 	//FString AvatarPath(TEXT("I:\\tasks\\z3d\\task20241003-mpc2ue\\mpc_exported\\avatar\\model.fbx"));
-	FString AvatarPath(TEXT("I:\\tasks\\z3d\\task20241812-fbx-import-ue-again\\avatar (22)\\avatar\\model.fbx"));
+	//FString AvatarPath(TEXT("I:\\tasks\\z3d\\task20241812-fbx-import-ue-again\\avatar (22)\\avatar\\model.fbx"));
 	const FString SkeletalMeshDestinationDir = TEXT("/Game/MetapersonAvatars/");
 	FString SkeletalMeshDestination = SkeletalMeshDestinationDir + TEXT("SM_Metaperson_0");
+
+	IDesktopPlatform* DesktopPlatform = FDesktopPlatformModule::Get();
+	void* ParentWindowPtr = FSlateApplication::Get().GetActiveTopLevelWindow()->GetNativeWindow()->GetOSWindowHandle();
+	FString DialogTitle(TEXT("Import FBX Metaperson Model"));
+	TArray<FString> OutFiles;
+	bool bOpenRes = DesktopPlatform->OpenFileDialog(ParentWindowPtr, DialogTitle, TEXT(""), TEXT(""), TEXT("Fbx files (*.fbx)|*.fbx"), EFileDialogFlags::None, OutFiles);
+	if(!bOpenRes || OutFiles.Num() == 0) {
+        return FReply::Handled();
+    }
+	FString AvatarPath = OutFiles[0];
 	UAvatarSDKMetaperson2ImportUtils* Importer = NewObject<UAvatarSDKMetaperson2ImportUtils>();
+
 	bool bSuccess = false;
 	Importer->ImportSkeletalMesh(AvatarPath, SkeletalMeshDestination, bSuccess);
 	if (bSuccess) {
