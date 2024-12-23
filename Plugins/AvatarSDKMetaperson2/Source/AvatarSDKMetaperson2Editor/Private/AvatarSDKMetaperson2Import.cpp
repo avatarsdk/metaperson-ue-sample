@@ -21,7 +21,8 @@ void SAvatarSDKMetaperson2Import::Construct(const FArguments& InArgs)
 }
 FReply SAvatarSDKMetaperson2Import::OnLoadAnimationButtonClicked()
 {
-	FString AvatarPath(TEXT("I:\\tasks\\z3d\\task20241003-mpc2ue\\mpc_exported\\avatar\\model.fbx"));
+	//FString AvatarPath(TEXT("I:\\tasks\\z3d\\task20241003-mpc2ue\\mpc_exported\\avatar\\model.fbx"));
+	FString AvatarPath(TEXT("I:\\tasks\\z3d\\task20241812-fbx-import-ue-again\\avatar (22)\\avatar\\model.fbx"));
 	const FString SkeletalMeshDestinationDir = TEXT("/Game/MetapersonAvatars/");
 	FString SkeletalMeshDestination = SkeletalMeshDestinationDir + TEXT("SM_Metaperson_0");
 	UAvatarSDKMetaperson2ImportUtils* Importer = NewObject<UAvatarSDKMetaperson2ImportUtils>();

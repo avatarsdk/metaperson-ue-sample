@@ -26,6 +26,16 @@ public:
     UFUNCTION()
     FString GetTextureName(UTexture* Texture, UMaterialInterface* Material, const FString& MaterialPath, const FString& ParamName);
 protected:
-    const FString SkeletonRef = TEXT("/AvatarSDKMetaperson2/Skeleton/Metaperson2_Template_Skeleton");
-    const FString SmRef = TEXT("/Game/MetapersonAvatars/model");
+    const FString SkeletonRef = TEXT("/Game/MetapersonAvatars/Fbx_Metaperson_Skeleton");
+    const FString SmRef = TEXT("/Game/MetapersonAvatars/SM_Fbx_Metaperson");
+protected:
+    void SkeletalMeshSetRequiredBones(USkeletalMesh* mesh, int lod_index, TArray<FBoneIndexType> required_bones);
+    void SkeletalMeshSetActiveBoneIndices(USkeletalMesh* mesh, int lod_index, TArray<FBoneIndexType> active_indices);
+    void SkeletalMeshSetSoftVertices(USkeletalMesh* mesh, TArray<FSoftSkinVertex>& soft_vertices, int lod_index, int section_index);
+    void SkeletalMeshSetSkeleton(USkeletalMesh* mesh, USkeleton* skeleton);
+    void FixMesh(USkeletalMesh* mesh);
+    void FixSkeletalMeshImportData(USkeletalMesh* mesh, USkeleton* oldSkeleton);
+    void FixBonesInfluences(USkeletalMesh* Mesh, USkeleton* OldSkeleton);
+    int32_t GetUpdatedBoneIndex(const USkeleton* old_skeleton, const USkeleton* new_skeleton, const TArray<uint16>& old_bone_map, TArray<uint16>& new_bone_map, int32_t index);
+
 };
