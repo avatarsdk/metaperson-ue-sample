@@ -22,6 +22,40 @@ void SAvatarSDKMetaperson2Import::Construct(const FArguments& InArgs)
 			.OnClicked(FOnClicked::CreateSP(this, &SAvatarSDKMetaperson2Import::OnLoadAnimationButtonClicked))
 	];
 }
+
+
+void SAvatarSDKMetaperson2Import::UpdateBlueprintProperty(const FString& BlueprintPath, USkeletalMesh* SkeletalMesh)
+{
+	UBlueprint* Blueprint = Cast<UBlueprint>(StaticLoadObject(UBlueprint::StaticClass(), nullptr, *BlueprintPath));
+    if (!Blueprint) {
+        return;
+    }
+
+	AActor* DefaultActor = Cast<AActor>(Blueprint->GeneratedClass->GetDefaultObject());
+	if (!DefaultActor)
+	{
+		return;
+	}
+	auto Components = DefaultActor->GetComponents();
+
+	for(auto Component : Components)
+    {
+        if (Component->IsA(USkeletalMeshComponent::StaticClass()))
+        {
+            USkeletalMeshComponent* SkeletalMeshComponent = Cast<USkeletalMeshComponent>(Component);
+			if(!SkeletalMeshComponent) {
+                continue;
+            }
+			if (SkeletalMeshComponent->GetName() == TEXT("FbxMesh")) {
+				SkeletalMeshComponent->SetSkeletalMesh(SkeletalMesh);
+				SkeletalMeshComponent->SetVisibility(true);
+			} else {
+				SkeletalMeshComponent->SetVisibility(false);
+			}
+        }
+    }	
+}
+
 FReply SAvatarSDKMetaperson2Import::OnLoadAnimationButtonClicked()
 {
 	//FString AvatarPath(TEXT("I:\\tasks\\z3d\\task20241003-mpc2ue\\mpc_exported\\avatar\\model.fbx"));
@@ -41,8 +75,14 @@ FReply SAvatarSDKMetaperson2Import::OnLoadAnimationButtonClicked()
 	UAvatarSDKMetaperson2ImportUtils* Importer = NewObject<UAvatarSDKMetaperson2ImportUtils>();
 
 	bool bSuccess = false;
-	Importer->ImportSkeletalMesh(AvatarPath, SkeletalMeshDestination, bSuccess);
-	if (bSuccess) {
+	auto FbxImportedSkeletalMesh = Importer->ImportSkeletalMesh(AvatarPath, SkeletalMeshDestination, bSuccess);
+	if (!bSuccess) {
+		return FReply::Handled();
+	}	
+	FString BlueprintPath = TEXT("/AvatarSDKMetaperson2/ThirdPerson/Blueprints/BP_ThirdPersonCharacter");
+	UpdateBlueprintProperty(BlueprintPath, FbxImportedSkeletalMesh);
+   
+	if (!bSuccess) {
 
 	}
 	return FReply::Handled();

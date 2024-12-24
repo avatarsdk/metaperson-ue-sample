@@ -18,4 +18,7 @@ public:
 	/** Constructs this widget with InArgs */
 	void Construct(const FArguments& InArgs);
 	FReply OnLoadAnimationButtonClicked();
+	
+protected:
+	void UpdateBlueprintProperty(const FString& BlueprintPath, USkeletalMesh* SkeletalMesh);
 };

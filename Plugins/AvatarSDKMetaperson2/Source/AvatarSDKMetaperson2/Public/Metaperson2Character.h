@@ -30,6 +30,9 @@ class AVATARSDKMETAPERSON2_API AMetaperson2Character : public ACharacter
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "AvatarSDK|Metaperson 2")
 	UAvatarSDKComponent* AvatarSDKComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "AvatarSDK|Metaperson 2")
+	USkeletalMeshComponent* FbxMeshComponent;
 public:
 	AMetaperson2Character();
 
