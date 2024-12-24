@@ -26,8 +26,8 @@ public:
     UFUNCTION()
     FString GetTextureName(UTexture* Texture, UMaterialInterface* Material, const FString& MaterialPath, const FString& ParamName);
 protected:
-    const FString SkeletonRef = TEXT("/Game/MetapersonAvatars/Fbx_Metaperson_Skeleton");
-    const FString SmRef = TEXT("/Game/MetapersonAvatars/SM_Fbx_Metaperson");
+    const FString SkeletonRef = TEXT("/AvatarSDKMetaperson2/Skeleton/Fbx/Fbx_Metaperson_Skeleton");
+    const FString SmRef = TEXT("/AvatarSDKMetaperson2/Skeleton/Fbx/SM_Fbx_Metaperson");
 protected:
     void SkeletalMeshSetRequiredBones(USkeletalMesh* mesh, int lod_index, TArray<FBoneIndexType> required_bones);
     void SkeletalMeshSetActiveBoneIndices(USkeletalMesh* mesh, int lod_index, TArray<FBoneIndexType> active_indices);
