@@ -26,12 +26,14 @@ class AVATARSDKMETAPERSON2_API UAvatarSDKLoader : public UObject
 {
 	GENERATED_BODY()
 public:
-	void LoadAvatarAsync(const FString& GlbPath, USkeletalMeshComponent* InSkeletalMeshComponent, FOnAvatarLoaded AvatarLoadedDelegate);
+	void LoadAvatarAsync(const FString& GlbPath, USkeletalMeshComponent* InSkeletalMeshComponent, USkeletalMeshComponent* InFbxMeshComponent, FOnAvatarLoaded AvatarLoadedDelegate);
 	UPROPERTY(BlueprintAssignable)
 	FOnAvatarLoaded OnAvatarLoaded;
 protected:
 	UPROPERTY()
 	USkeletalMeshComponent* SkeletalMeshComponent;
+	UPROPERTY()
+	USkeletalMeshComponent* FbxMeshComponent;
 	UPROPERTY()
 	class UglTFRuntimeAsset* GltfRuntimeAsset;
 	FglTFRuntimeSkeletalMeshAsync GlTFRuntimeSkeletalMeshDelegate;

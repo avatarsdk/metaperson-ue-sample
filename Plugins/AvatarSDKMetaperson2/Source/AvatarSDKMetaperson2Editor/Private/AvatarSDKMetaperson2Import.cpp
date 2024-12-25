@@ -58,8 +58,6 @@ void SAvatarSDKMetaperson2Import::UpdateBlueprintProperty(const FString& Bluepri
 
 FReply SAvatarSDKMetaperson2Import::OnLoadAnimationButtonClicked()
 {
-	//FString AvatarPath(TEXT("I:\\tasks\\z3d\\task20241003-mpc2ue\\mpc_exported\\avatar\\model.fbx"));
-	//FString AvatarPath(TEXT("I:\\tasks\\z3d\\task20241812-fbx-import-ue-again\\avatar (22)\\avatar\\model.fbx"));
 	const FString SkeletalMeshDestinationDir = TEXT("/Game/MetapersonAvatars/");
 	FString SkeletalMeshDestination = SkeletalMeshDestinationDir + TEXT("SM_Metaperson_0");
 
@@ -81,10 +79,6 @@ FReply SAvatarSDKMetaperson2Import::OnLoadAnimationButtonClicked()
 	}	
 	FString BlueprintPath = TEXT("/AvatarSDKMetaperson2/ThirdPerson/Blueprints/BP_ThirdPersonCharacter");
 	UpdateBlueprintProperty(BlueprintPath, FbxImportedSkeletalMesh);
-   
-	if (!bSuccess) {
-
-	}
 	return FReply::Handled();
 }
 END_SLATE_FUNCTION_BUILD_OPTIMIZATION
