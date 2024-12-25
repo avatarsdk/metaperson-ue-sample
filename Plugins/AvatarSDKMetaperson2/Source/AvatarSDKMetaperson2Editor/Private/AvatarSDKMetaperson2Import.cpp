@@ -5,7 +5,6 @@
 #include "SlateOptMacros.h"
 #include "IDesktopPlatform.h"
 #include "DesktopPlatformModule.h"
-
 #include <AvatarSDKMetaperson2ImportUtils.h>
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION

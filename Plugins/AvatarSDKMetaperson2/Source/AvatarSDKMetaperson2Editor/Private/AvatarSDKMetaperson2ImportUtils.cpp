@@ -12,6 +12,7 @@
 #include "Rendering/SkeletalMeshRenderData.h"
 #include "Materials/MaterialInstanceConstant.h"
 #include "TransientObjectSaverLibrary.h"
+#include "AvatarSdkRaMaterialsManager.h"
 #include "RuntimeSkeletalMeshGenerator/RuntimeSkeletalMeshGenerator.h"
 #if ENGINE_MAJOR_VERSION >= 5 && ENGINE_MINOR_VERSION >= 1
 #include "Engine/SkinnedAssetCommon.h"
@@ -412,10 +413,10 @@ USkeletalMesh* UAvatarSDKMetaperson2ImportUtils::ImportSkeletalMesh(FString& Src
         bOutSuccess = false;
         return nullptr;
     }
-    /*UAvatarSdkRaMaterialsManager* MaterialsManager = NewObject< UAvatarSdkRaMaterialsManager>();
+    UAvatarSdkRaMaterialsManager* MaterialsManager = NewObject< UAvatarSdkRaMaterialsManager>();
 
-    MaterialsManager->Initialize(this, bRtMaterilas);
-    MaterialsManager->SetMaterialsToMesh(Result, FPaths::GetPath(DstPath));*/
+    MaterialsManager->Initialize(false);
+    MaterialsManager->SetMaterialsToMesh(Result, FPaths::GetPath(DstPath));
 
     //SetUpMeshMaterials(Result);
 
