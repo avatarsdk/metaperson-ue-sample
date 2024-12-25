@@ -21,10 +21,11 @@
 #include <Factories/FbxFactory.h>
 #include <ObjectTools.h>
 
-
-void UAvatarSDKMetaperson2ImportUtils::FixSkeletalMeshImportData(USkeletalMesh* mesh, USkeleton* oldSkeleton) {
+void UAvatarSDKMetaperson2ImportUtils::FixSkeletalMeshImportData(USkeletalMesh* Mesh, USkeleton* OldSkeleton)
+{
     FSkeletalMeshImportData ImportData;
-    mesh->LoadLODImportedData(0, ImportData);
+    Mesh->LoadLODImportedData(0, ImportData);
+
     SkeletalMeshImportData::FBone NewRootBone;
     NewRootBone.Name = TEXT("root");
     NewRootBone.ParentIndex = INDEX_NONE; // No parent, it's the root
@@ -32,68 +33,64 @@ void UAvatarSDKMetaperson2ImportUtils::FixSkeletalMeshImportData(USkeletalMesh* 
     NewRootBone.Flags = 0;
     NewRootBone.BonePos.Transform.SetIdentity();
 
-    
     ImportData.RefBonesBinary.Insert(NewRootBone, 0);
-    for (int i = 1; i < ImportData.RefBonesBinary.Num(); i++) {
-        auto oldBoneIndex = ImportData.RefBonesBinary[i].ParentIndex;
-        if (oldBoneIndex == INDEX_NONE) {
-            ImportData.RefBonesBinary[i].ParentIndex = 0.;
+
+    for (int i = 1; i < ImportData.RefBonesBinary.Num(); i++)
+    {
+        auto OldBoneIndex = ImportData.RefBonesBinary[i].ParentIndex;
+
+        if (OldBoneIndex == INDEX_NONE)
+        {
+            ImportData.RefBonesBinary[i].ParentIndex = 0;
         }
-        else {
-            auto oldBoneName = oldSkeleton->GetReferenceSkeleton().GetBoneName(oldBoneIndex);
-            auto newBoneIndex = mesh->Skeleton->GetReferenceSkeleton().FindBoneIndex(oldBoneName);
-            ImportData.RefBonesBinary[i].ParentIndex = newBoneIndex;
+        else
+        {
+            auto OldBoneName = OldSkeleton->GetReferenceSkeleton().GetBoneName(OldBoneIndex);
+            auto NewBoneIndex = Mesh->Skeleton->GetReferenceSkeleton().FindBoneIndex(OldBoneName);
+            ImportData.RefBonesBinary[i].ParentIndex = NewBoneIndex;
         }
-        
     }
 
-    USkeleton* newSkeleton = mesh->Skeleton;
-    for (int i = 0; i < ImportData.Influences.Num(); i++) {
-        auto oldBoneIndex = ImportData.Influences[i].BoneIndex;
-        auto oldBoneName = oldSkeleton->GetReferenceSkeleton().GetBoneName(oldBoneIndex);
-        auto newBoneIndex = newSkeleton->GetReferenceSkeleton().FindBoneIndex(oldBoneName); 
-        ImportData.Influences[i].BoneIndex = newBoneIndex;
+    USkeleton* newSkeleton = Mesh->Skeleton;
+
+    for (int i = 0; i < ImportData.Influences.Num(); i++)
+    {
+        auto OldBoneIndex = ImportData.Influences[i].BoneIndex;
+        auto OldBoneName = OldSkeleton->GetReferenceSkeleton().GetBoneName(OldBoneIndex);
+        auto NewBoneIndex = newSkeleton->GetReferenceSkeleton().FindBoneIndex(OldBoneName);
+        ImportData.Influences[i].BoneIndex = NewBoneIndex;
     }
-
-
-    mesh->SaveLODImportedData(0, ImportData);
+    Mesh->SaveLODImportedData(0, ImportData);
 }
 
-void UAvatarSDKMetaperson2ImportUtils::SkeletalMeshSetSoftVertices(USkeletalMesh* mesh, TArray<FSoftSkinVertex>& soft_vertices, int lod_index, int section_index)
+
+void UAvatarSDKMetaperson2ImportUtils::SkeletalMeshSetSoftVertices(USkeletalMesh* Mesh, TArray<FSoftSkinVertex>& SoftVertices, int LODIndex, int SectionIndex)
 {
-    FSkeletalMeshModel* resource = mesh->GetImportedModel();
+    FSkeletalMeshModel* Resource = Mesh->GetImportedModel();
 
+    FSkeletalMeshLODModel& Model = Resource->LODModels[LODIndex];
 
-    //if (lod_index < 0 || lod_index >= resource->LODModels.Num())
-    //	return PyErr_Format(PyExc_Exception, "invalid LOD index, must be between 0 and %d", resource->LODModels.Num() - 1);
-
-    FSkeletalMeshLODModel& model = resource->LODModels[lod_index];
-
-
-    /*if (section_index < 0 || section_index >= model.Sections.Num())
-        return PyErr_Format(PyExc_Exception, "invalid Section index, must be between 0 and %d", model.Sections.Num() - 1);*/
-
-        // temporarily disable all USkinnedMeshComponent's
     TComponentReregisterContext<USkinnedMeshComponent> ReregisterContext;
-    mesh->PreEditChange(nullptr);
-    mesh->ReleaseResources();
-    mesh->ReleaseResourcesFence.Wait();
+    Mesh->PreEditChange(nullptr);
+    Mesh->ReleaseResources();
+    Mesh->ReleaseResourcesFence.Wait();
 
-    
-    model.Sections[section_index].SoftVertices = soft_vertices;
-    model.Sections[section_index].NumVertices = soft_vertices.Num();
-    model.Sections[section_index].CalcMaxBoneInfluences();
-    
-    mesh->RefBasesInvMatrix.Empty();
-    mesh->CalculateInvRefMatrices();
-    mesh->Build();
-    mesh->AssetImportData = nullptr;
+    Model.Sections[SectionIndex].SoftVertices = SoftVertices;
+    Model.Sections[SectionIndex].NumVertices = SoftVertices.Num();
+    Model.Sections[SectionIndex].CalcMaxBoneInfluences();
+
+    Mesh->RefBasesInvMatrix.Empty();
+    Mesh->CalculateInvRefMatrices();
+    Mesh->Build();
+    Mesh->AssetImportData = nullptr;
+
 #if WITH_EDITOR
-    mesh->PostEditChange();
+    Mesh->PostEditChange();
 #endif
 
-    mesh->InitResources();
-    mesh->MarkPackageDirty();
+    Mesh->InitResources();
+    Mesh->MarkPackageDirty();
+
 }
 
 UAssetImportTask* UAvatarSDKMetaperson2ImportUtils::CreateImportTask(const FString& SrcPath, const FString& DstPath, UFactory* ExtraFactory, UObject* ExtraOptions, bool& bOutSuccess)
@@ -171,112 +168,105 @@ void SkeletonAddBone(USkeleton* skeleton,  char* name, int parent_index, FTransf
     skeleton->MarkPackageDirty();
 }
 
-void UAvatarSDKMetaperson2ImportUtils::SkeletalMeshSetRequiredBones(USkeletalMesh* mesh, int lod_index, TArray<FBoneIndexType> required_bones)
-{   
-
-    if (!mesh)
-        return;//yErr_Format(PyExc_Exception, "uobject is not a USkeletalMesh");
-
-
-    FSkeletalMeshModel* resource = mesh->GetImportedModel();
-
-
-    if (lod_index < 0 || lod_index >= resource->LODModels.Num())
-        return;// PyErr_Format(PyExc_Exception, "invalid LOD index, must be between 0 and %d", resource->LODModels.Num() - 1);
-
-    FSkeletalMeshLODModel& model = resource->LODModels[lod_index];
-
-    // temporarily disable all USkinnedMeshComponent's
-    TComponentReregisterContext<USkinnedMeshComponent> ReregisterContext;
-
-    mesh->ReleaseResources();
-    mesh->ReleaseResourcesFence.Wait();
-
-    model.RequiredBones = required_bones;
-    model.RequiredBones.Sort();
-
-    mesh->RefBasesInvMatrix.Empty();
-    mesh->CalculateInvRefMatrices();
-
-#if WITH_EDITOR
-    mesh->PostEditChange();
-#endif
-    mesh->InitResources();
-    mesh->MarkPackageDirty();
-
-}
-
-void UAvatarSDKMetaperson2ImportUtils::SkeletalMeshSetActiveBoneIndices(USkeletalMesh* mesh, int lod_index, TArray<FBoneIndexType> active_indices)
+void UAvatarSDKMetaperson2ImportUtils::SkeletalMeshSetRequiredBones(USkeletalMesh* Mesh, int32 LODIndex, TArray<FBoneIndexType> RequiredBones)
 {
-    FSkeletalMeshModel* resource = mesh->GetImportedModel();
+    if (!Mesh)
+        return;
 
-    if (lod_index < 0 || lod_index >= resource->LODModels.Num())
-        return;// PyErr_Format(PyExc_Exception, "invalid LOD index, must be between 0 and %d", resource->LODModels.Num() - 1);
+    FSkeletalMeshModel* Resource = Mesh->GetImportedModel();
 
-    FSkeletalMeshLODModel& model = resource->LODModels[lod_index];
+    if (LODIndex < 0 || LODIndex >= Resource->LODModels.Num())
+        return;
 
-    // temporarily disable all USkinnedMeshComponent's
+    FSkeletalMeshLODModel& Model = Resource->LODModels[LODIndex];
+
+    // Temporarily disable all USkinnedMeshComponent's
     TComponentReregisterContext<USkinnedMeshComponent> ReregisterContext;
 
-    mesh->ReleaseResources();
-    mesh->ReleaseResourcesFence.Wait();
+    Mesh->ReleaseResources();
+    Mesh->ReleaseResourcesFence.Wait();
 
-    model.ActiveBoneIndices = active_indices;
-    model.ActiveBoneIndices.Sort();
+    Model.RequiredBones = RequiredBones;
+    Model.RequiredBones.Sort();
 
-    mesh->RefBasesInvMatrix.Empty();
-    mesh->CalculateInvRefMatrices();
+    Mesh->RefBasesInvMatrix.Empty();
+    Mesh->CalculateInvRefMatrices();
 
 #if WITH_EDITOR
-    mesh->PostEditChange();
+    Mesh->PostEditChange();
 #endif
-    mesh->InitResources();
-    mesh->MarkPackageDirty();
 
+    Mesh->InitResources();
+    Mesh->MarkPackageDirty();
 }
 
-int32_t UAvatarSDKMetaperson2ImportUtils::GetUpdatedBoneIndex(const USkeleton* old_skeleton, const USkeleton* new_skeleton, const TArray<uint16>& old_bone_map, TArray<uint16>& new_bone_map, int32_t index)
+void UAvatarSDKMetaperson2ImportUtils::SkeletalMeshSetActiveBoneIndices(USkeletalMesh* Mesh, int32 LODIndex, TArray<FBoneIndexType> ActiveIndices)
+{
+    FSkeletalMeshModel* Resource = Mesh->GetImportedModel();
+
+    if (LODIndex < 0 || LODIndex >= Resource->LODModels.Num())
+        return;
+
+    FSkeletalMeshLODModel& Model = Resource->LODModels[LODIndex];
+
+    // Temporarily disable all USkinnedMeshComponent's
+    TComponentReregisterContext<USkinnedMeshComponent> ReregisterContext;
+
+    Mesh->ReleaseResources();
+    Mesh->ReleaseResourcesFence.Wait();
+
+    Model.ActiveBoneIndices = ActiveIndices;
+    Model.ActiveBoneIndices.Sort();
+
+    Mesh->RefBasesInvMatrix.Empty();
+    Mesh->CalculateInvRefMatrices();
+
+#if WITH_EDITOR
+    Mesh->PostEditChange();
+#endif
+
+    Mesh->InitResources();
+    Mesh->MarkPackageDirty();
+}
+
+int32_t UAvatarSDKMetaperson2ImportUtils::GetUpdatedBoneIndex(const USkeleton* OldSkeleton, const USkeleton* NewSkeleton, const TArray<uint16>& OldBoneMap, TArray<uint16>& NewBoneMap, int32_t Index)
 {
     // Get the skeleton bone ID from the map
-    int32_t true_bone_id = old_bone_map[index];
+    int32_t TrueBoneID = OldBoneMap[Index];
 
     // Get the bone name
-    
-    FName bone_name = old_skeleton->GetReferenceSkeleton().GetBoneName(index);
+    FName BoneName = OldSkeleton->GetReferenceSkeleton().GetBoneName(Index);
 
     // Get the new index
-    int32_t new_bone_id = new_skeleton->GetReferenceSkeleton().FindBoneIndex(bone_name);
+    int32_t NewBoneID = NewSkeleton->GetReferenceSkeleton().FindBoneIndex(BoneName);
 
     // Check if a new mapping is available
-    if (new_bone_map.Contains(new_bone_id))
+    if (NewBoneMap.Contains(NewBoneID))
     {
-        return new_bone_map.IndexOfByKey(new_bone_id);
+        return NewBoneMap.IndexOfByKey(NewBoneID);
     }
 
-    new_bone_map.Add(new_bone_id);
-    return new_bone_map.Num() - 1;
+    NewBoneMap.Add(NewBoneID);
+    return NewBoneMap.Num() - 1;
 }
 
 
-void UAvatarSDKMetaperson2ImportUtils::SkeletalMeshSetSkeleton(USkeletalMesh* mesh, USkeleton* skeleton)
+void UAvatarSDKMetaperson2ImportUtils::SkeletalMeshSetSkeleton(USkeletalMesh* Mesh, USkeleton* InSkeleton)
 {
-    mesh->ReleaseResources();
-    mesh->ReleaseResourcesFence.Wait();
+    Mesh->ReleaseResources();
+    Mesh->ReleaseResourcesFence.Wait();
 
-    mesh->Skeleton = skeleton;
-
-    mesh->RefSkeleton = skeleton->GetReferenceSkeleton();
-
-    mesh->RefBasesInvMatrix.Empty();
-    mesh->CalculateInvRefMatrices();
+    Mesh->Skeleton = InSkeleton;
+    Mesh->RefSkeleton = InSkeleton->GetReferenceSkeleton();
+    Mesh->RefBasesInvMatrix.Empty();
+    Mesh->CalculateInvRefMatrices();
 
 #if WITH_EDITOR
-    mesh->PostEditChange();
+    Mesh->PostEditChange();
 #endif
-    mesh->InitResources();
-    mesh->MarkPackageDirty();
 
-
+    Mesh->InitResources();
+    Mesh->MarkPackageDirty();
 }
 
 void UAvatarSDKMetaperson2ImportUtils::FixBonesInfluences(USkeletalMesh* Mesh, USkeleton* OldSkeleton)

@@ -29,13 +29,13 @@ protected:
     const FString SkeletonRef = TEXT("/AvatarSDKMetaperson2/Skeleton/Fbx/Fbx_Metaperson_Skeleton");
     const FString SmRef = TEXT("/AvatarSDKMetaperson2/Skeleton/Fbx/SM_Fbx_Metaperson");
 protected:
-    void SkeletalMeshSetRequiredBones(USkeletalMesh* mesh, int lod_index, TArray<FBoneIndexType> required_bones);
-    void SkeletalMeshSetActiveBoneIndices(USkeletalMesh* mesh, int lod_index, TArray<FBoneIndexType> active_indices);
-    void SkeletalMeshSetSoftVertices(USkeletalMesh* mesh, TArray<FSoftSkinVertex>& soft_vertices, int lod_index, int section_index);
-    void SkeletalMeshSetSkeleton(USkeletalMesh* mesh, USkeleton* skeleton);
-    void FixMesh(USkeletalMesh* mesh);
-    void FixSkeletalMeshImportData(USkeletalMesh* mesh, USkeleton* oldSkeleton);
+    void SkeletalMeshSetRequiredBones(USkeletalMesh* Mesh, int32 LODIndex, TArray<FBoneIndexType> RequiredBones);
+    void SkeletalMeshSetActiveBoneIndices(USkeletalMesh* Mesh, int32 LODIndex, TArray<FBoneIndexType> ActiveIndices);
+    void SkeletalMeshSetSoftVertices(USkeletalMesh* Mesh, TArray<FSoftSkinVertex>& SoftVertices, int LODIndex, int SectionIndex);
+    void SkeletalMeshSetSkeleton(USkeletalMesh* Mesh, USkeleton* Skeleton);
+    void FixMesh(USkeletalMesh* Mesh);
+    void FixSkeletalMeshImportData(USkeletalMesh* Mesh, USkeleton* OldSkeleton);
     void FixBonesInfluences(USkeletalMesh* Mesh, USkeleton* OldSkeleton);
-    int32_t GetUpdatedBoneIndex(const USkeleton* old_skeleton, const USkeleton* new_skeleton, const TArray<uint16>& old_bone_map, TArray<uint16>& new_bone_map, int32_t index);
+    int32_t GetUpdatedBoneIndex(const USkeleton* asold_skeleton, const USkeleton* new_skeleton, const TArray<uint16>& old_bone_map, TArray<uint16>& new_bone_map, int32_t index);
 
 };
