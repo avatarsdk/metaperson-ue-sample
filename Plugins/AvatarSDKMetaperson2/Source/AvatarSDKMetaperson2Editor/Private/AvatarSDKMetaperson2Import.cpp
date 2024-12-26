@@ -6,6 +6,7 @@
 #include "IDesktopPlatform.h"
 #include "DesktopPlatformModule.h"
 #include "AssetRegistry/AssetRegistryModule.h"
+#include "AvatarSDK2MetapersonStyle.h"
 #include <AvatarSDKMetaperson2ImportUtils.h>
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
@@ -13,13 +14,32 @@ void SAvatarSDKMetaperson2Import::Construct(const FArguments& InArgs)
 {
 	ChildSlot
 		.HAlign(EHorizontalAlignment::HAlign_Center)
-		.VAlign(EVerticalAlignment::VAlign_Top)
-	[
+		.VAlign(EVerticalAlignment::VAlign_Fill)[
+		SNew(SBox)
+			
+			//	.MinDesiredWidth(500.0)
+			.HAlign(EHorizontalAlignment::HAlign_Fill)
+			.VAlign(EVerticalAlignment::VAlign_Fill)
+			.HeightOverride(500.0)
+			.WidthOverride(500.0)[
+		SNew(SVerticalBox)
+			+ SVerticalBox::Slot()
+			.Padding(0.0f, 35.0f, 0.0f, 5.0f)
+			.AutoHeight()[
+				SNew(SImage)
+					.Image(FAvatarSDK2MetapersonStyle::Get().GetBrush("AvatarSDKMetaperson2.MainLogo"))
+			] + 
+			SVerticalBox::Slot().AutoHeight()
+					.MaxHeight(80.0f)
+					.VAlign(EVerticalAlignment::VAlign_Fill)
+					.Padding(0.0f, 35.0f, 0.0f, 5.0f)[
 		SNew(SButton)
 			.HAlign(HAlign_Center)
 			.VAlign(VAlign_Center)
+			.TextStyle(&ButtonTextStyle)
 			.Text(FText::FromString("Import Avatar"))
 			.OnClicked(FOnClicked::CreateSP(this, &SAvatarSDKMetaperson2Import::OnLoadAnimationButtonClicked))
+		]]
 	];
 }
 

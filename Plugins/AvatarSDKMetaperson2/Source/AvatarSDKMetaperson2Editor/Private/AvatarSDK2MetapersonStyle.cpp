@@ -11,7 +11,7 @@
 
 TSharedPtr<FSlateStyleSet> FAvatarSDK2MetapersonStyle::StyleInstance = nullptr;
 #define IMAGE_PLUGIN_BRUSH_SVG( RelativePath, ... ) FSlateVectorImageBrush( FAvatarSDK2MetapersonStyle::InContent( RelativePath, ".svg" ), __VA_ARGS__ )
-
+#define IMAGE_PLUGIN_BRUSH_PNG( RelativePath, ... ) FSlateImageBrush( FAvatarSDK2MetapersonStyle::InContent( RelativePath, ".png" ), __VA_ARGS__ )
 void FAvatarSDK2MetapersonStyle::Initialize()
 {
 	if (!StyleInstance.IsValid())
@@ -43,7 +43,8 @@ TSharedRef< FSlateStyleSet > FAvatarSDK2MetapersonStyle::Create()
 	Style->SetContentRoot(IPluginManager::Get().FindPlugin("AvatarSDKMetaperson2")->GetBaseDir() / TEXT("Resources"));
 
 	//Style->Set("AvatarSDKMetaperson2.OpenPluginWindow", new IMAGE_BRUSH_SVG(TEXT("PlaceholderButtonIcon"), Icon20x20));
-	Style->Set("AvatarSDKMetaperson2.OpenPluginWindow", new IMAGE_PLUGIN_BRUSH_SVG("Icons/film", Icon20x20));
+	Style->Set("AvatarSDKMetaperson2.OpenPluginWindow", new IMAGE_PLUGIN_BRUSH_PNG("Icons/logo", Icon20x20));
+	Style->Set("AvatarSDKMetaperson2.MainLogo", new IMAGE_PLUGIN_BRUSH_PNG("Icons/metaperson-avatars-logo", FVector2D(360.0f, 120.0f)));
 
 	return Style;
 }

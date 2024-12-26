@@ -24,4 +24,12 @@ protected:
 	const FString SkeletalMeshDestinationDir = TEXT("/Game/MetapersonAvatars/");
 	FString GenerateAssetName();
 	void UpdateBlueprintProperty(const FString& BlueprintPath, USkeletalMesh* SkeletalMesh);
+protected:
+	FSlateFontInfo TextFont = FSlateFontInfo(FPaths::EngineContentDir() / TEXT("Slate/Fonts/Roboto-Medium.ttf"), 18);
+	FTextBlockStyle ButtonTextStyle = FTextBlockStyle()
+		.SetFont(TextFont)
+		.SetColorAndOpacity(FSlateColor(FLinearColor::White))
+		.SetShadowOffset(FVector2D(1, 1))
+		.SetShadowColorAndOpacity(FLinearColor::Black)
+		.SetHighlightColor(FLinearColor::Green);
 };
