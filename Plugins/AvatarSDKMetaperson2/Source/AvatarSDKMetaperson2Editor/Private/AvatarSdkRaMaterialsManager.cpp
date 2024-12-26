@@ -41,7 +41,7 @@ void UAvatarSdkRaMaterialsManager::ImportTextures(TArray<FString> SrcTexturesPat
 		auto TexPackage = CreatePackage(*PathForTextures);
 		TexPackage->FullyLoad();
 		auto bCancelled = false;
-		auto NewTxName = TexName.Replace(TEXT(".png"), TEXT(""));
+		auto NewTxName = TexName.Replace(TEXT(".jpg"), TEXT(""));
 		auto CreatedTexture = TextureFactory->FactoryCreateFile(UTexture2D::StaticClass(), TexPackage, FName(*NewTxName), RF_Public | RF_Standalone, tx, NULL, GWarn, bCancelled);
 		if (CreatedTexture == nullptr)
 		{
@@ -70,7 +70,9 @@ void UAvatarSdkRaMaterialsManager::ImportTextures(TArray<FString> SrcTexturesPat
 
 		Tex->UpdateResource();
 		FAssetRegistryModule::AssetCreated(Tex);
-		const FString PackageFileName = FPackageName::LongPackageNameToFilename(TexPackage->GetName(), FPackageName::GetAssetPackageExtension());
+		auto LongPackageName = TexPackage->GetName();
+		auto Extension = FPackageName::GetAssetPackageExtension();
+		const FString PackageFileName = FPackageName::LongPackageNameToFilename(LongPackageName, Extension);
 		FSavePackageArgs SaveArgs;
 		UPackage::SavePackage(TexPackage, Tex, *PackageFileName, SaveArgs);
 
