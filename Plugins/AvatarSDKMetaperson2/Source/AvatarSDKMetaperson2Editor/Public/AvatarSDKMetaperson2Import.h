@@ -20,5 +20,8 @@ public:
 	FReply OnLoadAnimationButtonClicked();
 	
 protected:
+	TSet<FString> GetExistingAvatars();
+	const FString SkeletalMeshDestinationDir = TEXT("/Game/MetapersonAvatars/");
+	FString GenerateAssetName();
 	void UpdateBlueprintProperty(const FString& BlueprintPath, USkeletalMesh* SkeletalMesh);
 };

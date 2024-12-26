@@ -75,8 +75,6 @@ void UAvatarSdkRaMaterialsManager::ImportTextures(TArray<FString> SrcTexturesPat
 		const FString PackageFileName = FPackageName::LongPackageNameToFilename(LongPackageName, Extension);
 		FSavePackageArgs SaveArgs;
 		UPackage::SavePackage(TexPackage, Tex, *PackageFileName, SaveArgs);
-
-
 	}
 }
 
@@ -101,7 +99,6 @@ void UAvatarSdkRaMaterialsManager::Initialize(bool bUseRtMaterials)
 		Materials.Add(TEXT("haircut"), Cast<UMaterialInterface>(StaticLoadObject(UMaterialInterface::StaticClass(), nullptr, *HairMaterialRef)));
 	}
 }
-
 void UAvatarSdkRaMaterialsManager::ReadScalpTexture(FTextureParamsData& Data, USkeletalMesh* Mesh, const FString& DstDir)
 {
 	auto MeshSourceFile = Mesh->AssetImportData->SourceData.SourceFiles[0].RelativeFilename;
@@ -135,6 +132,19 @@ bool  UAvatarSdkRaMaterialsManager::FindTexture(FTextureParamsData& Data, const 
 	return false;
 }
 
+FString UAvatarSdkRaMaterialsManager::GetTextureNameWithoutPrefix(const FString& TxtName) {
+	auto Result = TxtName;
+	if (!FChar::IsUpper(Result[0])) {
+		int32 Idx;		
+		if (Result.FindChar('_', Idx)) {
+            Result = Result.RightChop(Idx + 1);
+        }
+	}
+	return Result;
+
+}
+
+
 MaterialTexturesData UAvatarSdkRaMaterialsManager::ExtractTextureData(USkeletalMesh* Mesh)
 {
 	TArray<FSkeletalMaterial>MeshMaterials = Mesh->GetMaterials();
@@ -163,8 +173,9 @@ MaterialTexturesData UAvatarSdkRaMaterialsManager::ExtractTextureData(USkeletalM
 				}
 				
 				//Roughnesss is not mentioned among fbx materials textures, but placed in the same directory as other textures				
-				{					
-					FString PathToRough = PathToTxt.Replace(TEXT("Color"), TEXT("Roughness"));
+				{	
+					auto BaseFileName = FPaths::GetCleanFilename(PathToTxt);
+					auto PathToRough = FPaths::Combine(FPaths::GetPath(PathToTxt), GetTextureNameWithoutPrefix(BaseFileName).Replace(TEXT("Color"), TEXT("Roughness")));					
 					UE_LOG(LogTemp, Log, TEXT("ExtractTextureData: Trying to import roughness texture %s"), *PathToRough);
 					if (!FindTexture(Data, PathToRough, ImportDstDir, ETextureParameterType::Roughness)) {
 						UE_LOG(LogTemp, Warning, TEXT("ExtractTextureData: Roughness texture not found %s"), *PathToRough);
@@ -173,7 +184,8 @@ MaterialTexturesData UAvatarSdkRaMaterialsManager::ExtractTextureData(USkeletalM
 				
                 //Metallic is not mentioned among fbx materials textures, but placed in the same directory as other textures
                 {
-                    FString PathToMetallic = PathToTxt.Replace(TEXT("Color"), TEXT("Metallic"));
+					auto BaseFileName = FPaths::GetCleanFilename(PathToTxt);
+                    FString PathToMetallic = FPaths::Combine(FPaths::GetPath(PathToTxt), GetTextureNameWithoutPrefix(BaseFileName).Replace(TEXT("Color"), TEXT("Metallic")));
                     UE_LOG(LogTemp, Log, TEXT("ExtractTextureData: Trying to import metallic texture %s"), *PathToMetallic);
                     if (!FindTexture(Data, PathToMetallic, ImportDstDir, ETextureParameterType::Metallic)) {
                         UE_LOG(LogTemp, Warning, TEXT("ExtractTextureData: Metallic texture not found %s"), *PathToMetallic);

@@ -91,4 +91,5 @@ protected:
 	void AddTexture(FTextureParamsData& Data, const FString& Name, const FString& SrcPath, const FString& DstDirectory, ETextureParameterType Type);
 	TSet<FString>GetHairTextures(const FString& Directory, FTextureParamsData& Data, const FString& DstDirectory);
 	bool FindTexture(FTextureParamsData& Data, const FString& PathToTxt, const FString& ImportDstDir, ETextureParameterType TextureType);
+	FString GetTextureNameWithoutPrefix(const FString& TxtName);
 };

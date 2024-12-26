@@ -5,6 +5,7 @@
 #include "SlateOptMacros.h"
 #include "IDesktopPlatform.h"
 #include "DesktopPlatformModule.h"
+#include "AssetRegistry/AssetRegistryModule.h"
 #include <AvatarSDKMetaperson2ImportUtils.h>
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
@@ -22,6 +23,33 @@ void SAvatarSDKMetaperson2Import::Construct(const FArguments& InArgs)
 	];
 }
 
+TSet<FString> SAvatarSDKMetaperson2Import::GetExistingAvatars()
+{
+	FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
+	TArray<FAssetData> AssetData;
+	FARFilter Filter;
+
+	Filter.PackagePaths.Add(*SkeletalMeshDestinationDir);
+	Filter.bRecursivePaths = true;
+
+	AssetRegistryModule.Get().GetAssets(Filter, AssetData);
+	TSet<FString> Existing;
+	for (auto Data : AssetData) {
+		Existing.Add(FPaths::GetPathLeaf(Data.PackagePath.ToString()));
+	}
+	return Existing;
+}
+
+FString SAvatarSDKMetaperson2Import::GenerateAssetName()
+{
+	auto Existing = GetExistingAvatars();
+	FString Variant = (TEXT("Metaperson_0"));
+	int Num = 1;
+	while (Existing.Contains(Variant)) {
+		Variant = FString::Printf(TEXT("Metaperson_%d"), Num++);
+	}
+	return Variant;
+}
 
 void SAvatarSDKMetaperson2Import::UpdateBlueprintProperty(const FString& BlueprintPath, USkeletalMesh* SkeletalMesh)
 {
@@ -57,8 +85,8 @@ void SAvatarSDKMetaperson2Import::UpdateBlueprintProperty(const FString& Bluepri
 
 FReply SAvatarSDKMetaperson2Import::OnLoadAnimationButtonClicked()
 {
-	const FString SkeletalMeshDestinationDir = TEXT("/Game/MetapersonAvatars/");
-	FString SkeletalMeshDestination = SkeletalMeshDestinationDir + TEXT("SM_Metaperson_0");
+	auto AssetName = GenerateAssetName();
+	FString SkeletalMeshDestination = SkeletalMeshDestinationDir / AssetName / AssetName;
 
 	IDesktopPlatform* DesktopPlatform = FDesktopPlatformModule::Get();
 	void* ParentWindowPtr = FSlateApplication::Get().GetActiveTopLevelWindow()->GetNativeWindow()->GetOSWindowHandle();
