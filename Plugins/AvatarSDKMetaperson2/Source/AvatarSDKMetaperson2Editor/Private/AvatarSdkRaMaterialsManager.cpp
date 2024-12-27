@@ -41,7 +41,7 @@ void UAvatarSdkRaMaterialsManager::ImportTextures(TArray<FString> SrcTexturesPat
 		auto TexPackage = CreatePackage(*PathForTextures);
 		TexPackage->FullyLoad();
 		auto bCancelled = false;
-		auto NewTxName = TexName.Replace(TEXT(".jpg"), TEXT(""));
+		auto NewTxName = TexName.Replace(TEXT(".jpg"), TEXT("")).Replace(TEXT(".png"), TEXT(""));
 		auto CreatedTexture = TextureFactory->FactoryCreateFile(UTexture2D::StaticClass(), TexPackage, FName(*NewTxName), RF_Public | RF_Standalone, tx, NULL, GWarn, bCancelled);
 		if (CreatedTexture == nullptr)
 		{

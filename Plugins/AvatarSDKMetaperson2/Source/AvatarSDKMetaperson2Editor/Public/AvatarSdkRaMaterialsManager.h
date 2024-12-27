@@ -80,7 +80,7 @@ public:
 	const FString BottomOutfitMaterialRef = TEXT("/AvatarSDKMetaperson2/Materials/OutfitBaseMaterial.OutfitBaseMaterial");
 	const FString ShoesMaterialRef = TEXT("/AvatarSDKMetaperson2/Materials/OutfitBaseMaterial.OutfitBaseMaterial");	
 	const FString RtHairMaterialRef = TEXT("/AvatarSDKMetaperson2/Materials/M_HairBase02.M_HairBase02");
-	const FString HairMaterialRef = TEXT("/AvatarSDKMetaperson2/Materials/M_HairBase03.M_HairBase03");	
+	const FString HairMaterialRef = TEXT("/AvatarSDKMetaperson2/Materials/Hair/AvatarHairFbx.AvatarHairFbx");
 protected:
 	MaterialTexturesData ExtractTextureData(USkeletalMesh* Mesh);
 public:
