@@ -114,21 +114,30 @@ void UAvatarSdkRaMaterialsManager::ReadScalpTexture(FTextureParamsData& Data, US
 	}
 }
 
-bool  UAvatarSdkRaMaterialsManager::FindTexture(FTextureParamsData& Data, const FString& PathToTxt, const FString& ImportDstDir, ETextureParameterType TextureType) {
+bool  UAvatarSdkRaMaterialsManager::FindTexture(FTextureParamsData& Data, const FString& DirectoryToSearch, const FString& TextureName, const FString& ImportDstDir, ETextureParameterType TextureType) {
 
-	FString RoughName = FPaths::GetBaseFilename(PathToTxt);
-	FString TxtDst = FPaths::Combine(ImportDstDir, RoughName);
-	if (FPaths::FileExists(PathToTxt))
-	{
-		UE_LOG(LogTemp, Log, TEXT("ExtractTextureData: Found texture %s"), *PathToTxt);
-		ImportTextures({ PathToTxt }, { TxtDst });
-		auto Texture = Cast<UTexture>(StaticLoadObject(UTexture::StaticClass(), nullptr, *TxtDst));
-		if (Texture) {
-			Data.Textures.Add(TextureType, Texture);
-			return true;
+	
+	
+	TArray<FString> PathVariants;
+	PathVariants.Add(FPaths::Combine(DirectoryToSearch, TextureName.Replace(TEXT(".jpg"), TEXT(".png"))));
+	PathVariants.Add(FPaths::Combine(DirectoryToSearch, TextureName.Replace(TEXT(".png"), TEXT(".jpg"))));
+	PathVariants.Add(FPaths::Combine(DirectoryToSearch, GetTextureNameWithoutPrefix(TextureName).Replace(TEXT(".jpg"), TEXT(".png"))));
+	PathVariants.Add(FPaths::Combine(DirectoryToSearch, GetTextureNameWithoutPrefix(TextureName).Replace(TEXT(".png"), TEXT(".jpg"))));
+
+	for (const auto& PathToTxt : PathVariants) {
+		if (FPaths::FileExists(PathToTxt))
+		{
+			FString BaseName = FPaths::GetBaseFilename(PathToTxt);
+			FString TxtDst = FPaths::Combine(ImportDstDir, BaseName);
+			UE_LOG(LogTemp, Log, TEXT("ExtractTextureData: Found texture %s"), *PathToTxt);
+			ImportTextures({ PathToTxt }, { TxtDst });
+			auto Texture = Cast<UTexture>(StaticLoadObject(UTexture::StaticClass(), nullptr, *TxtDst));
+			if (Texture) {
+				Data.Textures.Add(TextureType, Texture);
+				return true;
+			}
 		}
 	}
-
 	return false;
 }
 
@@ -175,9 +184,12 @@ MaterialTexturesData UAvatarSdkRaMaterialsManager::ExtractTextureData(USkeletalM
 				//Roughnesss is not mentioned among fbx materials textures, but placed in the same directory as other textures				
 				{	
 					auto BaseFileName = FPaths::GetCleanFilename(PathToTxt);
-					auto PathToRough = FPaths::Combine(FPaths::GetPath(PathToTxt), GetTextureNameWithoutPrefix(BaseFileName).Replace(TEXT("Color"), TEXT("Roughness")));					
+					TArray<FString> PathsToTry;
+					auto PathToRough = BaseFileName.Replace(TEXT("Color"), TEXT("Roughness"));
 					UE_LOG(LogTemp, Log, TEXT("ExtractTextureData: Trying to import roughness texture %s"), *PathToRough);
-					if (!FindTexture(Data, PathToRough, ImportDstDir, ETextureParameterType::Roughness)) {
+					if (FindTexture(Data, FPaths::GetPath(PathToTxt), PathToRough, ImportDstDir, ETextureParameterType::Roughness)) {
+						UE_LOG(LogTemp, Warning, TEXT("ExtractTextureData: Roughness texture found! %s"), *PathToRough);
+					} else {
 						UE_LOG(LogTemp, Warning, TEXT("ExtractTextureData: Roughness texture not found %s"), *PathToRough);
 					}
 				}
@@ -185,9 +197,17 @@ MaterialTexturesData UAvatarSdkRaMaterialsManager::ExtractTextureData(USkeletalM
                 //Metallic is not mentioned among fbx materials textures, but placed in the same directory as other textures
                 {
 					auto BaseFileName = FPaths::GetCleanFilename(PathToTxt);
-                    FString PathToMetallic = FPaths::Combine(FPaths::GetPath(PathToTxt), GetTextureNameWithoutPrefix(BaseFileName).Replace(TEXT("Color"), TEXT("Metallic")));
+					
+					auto PathToMetallic = BaseFileName.Replace(TEXT("Color"), TEXT("Metallic"));
+                    auto PathToMetallicSmoothness = FPaths::Combine(FPaths::GetPath(PathToTxt), BaseFileName.Replace(TEXT("Color"), TEXT("UnityMetallicSmoothness")));
+
                     UE_LOG(LogTemp, Log, TEXT("ExtractTextureData: Trying to import metallic texture %s"), *PathToMetallic);
-                    if (!FindTexture(Data, PathToMetallic, ImportDstDir, ETextureParameterType::Metallic)) {
+                    if (FindTexture(Data, FPaths::GetPath(PathToTxt),  PathToMetallic, ImportDstDir, ETextureParameterType::Metallic)) {
+                        UE_LOG(LogTemp, Warning, TEXT("ExtractTextureData: Metallic texture found! %s"), *PathToMetallic);
+                        break;
+                    } else if (FindTexture(Data, FPaths::GetPath(PathToTxt), PathToMetallicSmoothness, ImportDstDir, ETextureParameterType::Metallic)) {
+						UE_LOG(LogTemp, Warning, TEXT("ExtractTextureData: Metallic texture found! %s"), *PathToMetallicSmoothness);
+					} else {
                         UE_LOG(LogTemp, Warning, TEXT("ExtractTextureData: Metallic texture not found %s"), *PathToMetallic);
                     }
                 }
