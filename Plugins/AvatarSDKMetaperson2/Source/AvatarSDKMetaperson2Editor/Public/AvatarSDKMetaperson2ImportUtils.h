@@ -13,6 +13,7 @@
 #include "CoreMinimal.h"
 #include "Engine/SkeletalMesh.h" 
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Rendering/SkeletalMeshLODModel.h"
 #include "AvatarSDKMetaperson2ImportUtils.generated.h"
 
 UCLASS()
