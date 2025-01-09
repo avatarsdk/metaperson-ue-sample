@@ -45,6 +45,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "AvatarSDK|Metaperson 2")
 	USkeletalMeshComponent* SkeletalMeshComponent;
 
+	UPROPERTY(BlueprintReadWrite, Category = "AvatarSDK|Metaperson 2")
+	USkeletalMeshComponent* FbxMeshComponent;
+
 protected:
 	bool CheckSkeletalMesh();
 	UPROPERTY()

@@ -24,7 +24,7 @@ void UAvatarSDKComponent::LoadAvatar(const FString& ModelPath)
 		return;
 	}
 	Loader = NewObject<UAvatarSDKLoader>(this, TEXT("Loader"));
-	Loader->LoadAvatarAsync(ModelPath, SkeletalMeshComponent, OnAvatarLoaded);
+	Loader->LoadAvatarAsync(ModelPath, SkeletalMeshComponent, FbxMeshComponent, OnAvatarLoaded);
 }
 
 void UAvatarSDKComponent::DownloadAvatar(const FString& Url)
@@ -36,12 +36,28 @@ void UAvatarSDKComponent::DownloadAvatar(const FString& Url)
 
 bool UAvatarSDKComponent::CheckSkeletalMesh()
 {
-	if (!IsValid(SkeletalMeshComponent)) {
-		AActor* OwnerActor = GetOwner();		
-		SkeletalMeshComponent = OwnerActor->FindComponentByClass<USkeletalMeshComponent>();
-		if (!IsValid(SkeletalMeshComponent)) {
-			return false;
+	if(IsValid(SkeletalMeshComponent) && IsValid(FbxMeshComponent)) {
+        return true;
+    }
+
+	AActor* OwnerActor = GetOwner();
+	auto Components = OwnerActor->GetComponents();
+
+	for (auto Component : Components)
+	{
+		if (Component->IsA(USkeletalMeshComponent::StaticClass()))
+		{
+			USkeletalMeshComponent* FoundSkeletalMeshComponent = Cast<USkeletalMeshComponent>(Component);
+			if (!FoundSkeletalMeshComponent) {
+				continue;
+			}
+			if (FoundSkeletalMeshComponent->GetName() == TEXT("FbxMesh")) {
+				FbxMeshComponent = FoundSkeletalMeshComponent;
+            } else {
+                SkeletalMeshComponent = FoundSkeletalMeshComponent;
+			}
 		}
 	}
-	return true;
+	
+	return IsValid(SkeletalMeshComponent) && IsValid(FbxMeshComponent);
 }

@@ -13,10 +13,11 @@
 #include "Materials/Material.h"
 
 
-void UAvatarSDKLoader::LoadAvatarAsync(const FString& GlbPath, USkeletalMeshComponent* InSkeletalMeshComponent, FOnAvatarLoaded AvatarLoadedDelegate)
+void UAvatarSDKLoader::LoadAvatarAsync(const FString& GlbPath, USkeletalMeshComponent* InSkeletalMeshComponent, USkeletalMeshComponent* InFbxMeshComponent,  FOnAvatarLoaded AvatarLoadedDelegate)
 {
 	LoadSkeleton();
 	SkeletalMeshComponent = InSkeletalMeshComponent;
+	FbxMeshComponent = InFbxMeshComponent;
 	OnAvatarLoaded = AvatarLoadedDelegate;
 
 	FglTFRuntimeConfig Config;
@@ -63,7 +64,9 @@ void UAvatarSDKLoader::GltfRuntimeSkeletalMeshCallback(USkeletalMesh* InSkeletal
 	if (!IsValid(InSkeletalMesh)) {
 		UE_LOG(LogMetaperson2, Error, TEXT("UAvatarSDKLoader: GltfRuntimeSkeletalMeshCallback: InSkeletalMesh is not valid"));
 	}
+	FbxMeshComponent->SetVisibility(false);
 	SkeletalMeshComponent->SetSkeletalMesh(InSkeletalMesh);
+	SkeletalMeshComponent->SetVisibility(true);
 	if (OnAvatarLoaded.IsBound()) {
 		OnAvatarLoaded.Broadcast("");
 	}
