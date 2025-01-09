@@ -51,6 +51,7 @@ public class AvatarSDKMetaperson2Editor : ModuleRules
                 "Projects",
                 "ToolMenus",
                 "SkeletalMeshUtilitiesCommon",
+                "MaterialEditor"
               
 				// ... add private dependencies that you statically link with here ...	
 			}

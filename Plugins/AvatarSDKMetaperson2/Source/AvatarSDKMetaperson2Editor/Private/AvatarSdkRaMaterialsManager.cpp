@@ -17,7 +17,7 @@
 #include "HAL/FileManagerGeneric.h"
 #include <Factories/TextureFactory.h>
 #include "AssetRegistry/AssetRegistryModule.h"
-
+#include "MaterialEditingLibrary.h"
 #include "UObject/SavePackage.h"
 
 void UAvatarSdkRaMaterialsManager::ImportTextures(TArray<FString> SrcTexturesPath, TArray<FString> DstTexturesPath)
@@ -238,7 +238,7 @@ void UAvatarSdkRaMaterialsManager::SetMaterialsToMesh(USkeletalMesh* Mesh, const
 	FAssetToolsModule& AssetToolsModule =
 		FModuleManager::Get().LoadModuleChecked<FAssetToolsModule>("AssetTools");
 
-	for (FSkeletalMaterial& Mat : MaterialsToSet) {
+	for (FSkeletalMaterial& Mat : MaterialsToSet) {		
 		FTextureParamsData* TextureParamsData = TextureData.Find(Mat.MaterialSlotName.ToString());
 		UMaterialInterface** ParentMaterialPtr = Materials.Find(Mat.MaterialSlotName.ToString());
 		if (TextureParamsData && ParentMaterialPtr) {
@@ -266,9 +266,23 @@ void UAvatarSdkRaMaterialsManager::SetMaterialsToMesh(USkeletalMesh* Mesh, const
 				
 				MaterialInstance->SetTextureParameterValueEditorOnly(TextureParamName, Texture.Value);
 			}
-			Mat.MaterialInterface = MaterialInstance;
+			
+			Mat.MaterialInterface = MaterialInstance;			
 		}
+
+        {
+            auto Material = Mat.MaterialInterface->GetMaterial();
+
+            if (!Material->bUsedWithSkeletalMesh) {
+                Material->bUsedWithSkeletalMesh = true;
+            }
+            if (!Material->bUsedWithMorphTargets) {
+                Material->bUsedWithMorphTargets = true;
+            }
+            UMaterialEditingLibrary::RecompileMaterial(Material);
+        }
 	}
+	
 	Mesh->SetMaterials(MaterialsToSet);
 	Mesh->Modify();
 	Mesh->PostEditChange();
