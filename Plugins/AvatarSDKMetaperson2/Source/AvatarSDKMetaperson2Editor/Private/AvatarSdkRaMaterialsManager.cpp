@@ -19,6 +19,7 @@
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "MaterialEditingLibrary.h"
 #include "UObject/SavePackage.h"
+#include "Misc/EngineVersionComparison.h"
 
 void UAvatarSdkRaMaterialsManager::ImportTextures(TArray<FString> SrcTexturesPath, TArray<FString> DstTexturesPath)
 {
@@ -263,13 +264,14 @@ void UAvatarSdkRaMaterialsManager::SetMaterialsToMesh(USkeletalMesh* Mesh, const
 				}
 				
 				Texture.Value->PostEditChange();
-				
-				MaterialInstance->SetTextureParameterValueEditorOnly(TextureParamName, Texture.Value);
-			}
-			
-			Mat.MaterialInterface = MaterialInstance;			
-		}
 
+                MaterialInstance->SetTextureParameterValueEditorOnly(TextureParamName, Texture.Value);
+            }
+
+            Mat.MaterialInterface = MaterialInstance;
+        }
+
+#if UE_VERSION_NEWER_THAN(5, 4, 0)
         {
             auto Material = Mat.MaterialInterface->GetMaterial();
 
@@ -281,9 +283,10 @@ void UAvatarSdkRaMaterialsManager::SetMaterialsToMesh(USkeletalMesh* Mesh, const
             }
             UMaterialEditingLibrary::RecompileMaterial(Material);
         }
-	}
-	
-	Mesh->SetMaterials(MaterialsToSet);
+
+#endif
+    }
+    Mesh->SetMaterials(MaterialsToSet);
 	Mesh->Modify();
 	Mesh->PostEditChange();
 }
