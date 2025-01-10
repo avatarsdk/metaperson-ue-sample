@@ -261,10 +261,12 @@ int32_t UAvatarSDKMetaperson2ImportUtils::GetUpdatedBoneIndex(const USkeleton* O
 
 void UAvatarSDKMetaperson2ImportUtils::SkeletalMeshSetSkeleton(USkeletalMesh* Mesh, USkeleton* InSkeleton)
 {
+    check(IsValid(InSkeleton))
     Mesh->ReleaseResources();
     Mesh->ReleaseResourcesFence.Wait();
 
     Mesh->Skeleton = InSkeleton;
+    check(IsValid(InSkeleton))
     Mesh->RefSkeleton = InSkeleton->GetReferenceSkeleton();
     Mesh->RefBasesInvMatrix.Empty();
     Mesh->CalculateInvRefMatrices();
@@ -365,11 +367,11 @@ void UAvatarSDKMetaperson2ImportUtils::FixBonesInfluences(USkeletalMesh* Mesh, U
 }
 
  
-void UAvatarSDKMetaperson2ImportUtils::FixMesh(USkeletalMesh* mesh) {
-    USkeleton* OldSkeleton = mesh->GetSkeleton();
-    SkeletalMeshSetSkeleton(mesh, Skeleton);
-    FixSkeletalMeshImportData(mesh, OldSkeleton);
-    FixBonesInfluences(mesh, OldSkeleton);
+void UAvatarSDKMetaperson2ImportUtils::FixMesh(USkeletalMesh* Mesh) {
+    USkeleton* OldSkeleton = DuplicateObject<USkeleton>(Mesh->GetSkeleton(), GetTransientPackage(), NAME_None);
+    SkeletalMeshSetSkeleton(Mesh, Skeleton);
+    FixSkeletalMeshImportData(Mesh, OldSkeleton);
+    FixBonesInfluences(Mesh, OldSkeleton);
 }
 
 USkeletalMesh* UAvatarSDKMetaperson2ImportUtils::ImportSkeletalMesh(FString& SrcPath, FString& DstPath, bool& bOutSuccess, bool bRtMaterilas)

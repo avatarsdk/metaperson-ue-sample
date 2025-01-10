@@ -271,19 +271,18 @@ void UAvatarSdkRaMaterialsManager::SetMaterialsToMesh(USkeletalMesh* Mesh, const
             Mat.MaterialInterface = MaterialInstance;
         }
 
-#if UE_VERSION_NEWER_THAN(5, 4, 0)
+#if UE_VERSION_NEWER_THAN(5, 5, 0)
         {
             auto Material = Mat.MaterialInterface->GetMaterial();
-
             if (!Material->bUsedWithSkeletalMesh) {
                 Material->bUsedWithSkeletalMesh = true;
             }
             if (!Material->bUsedWithMorphTargets) {
                 Material->bUsedWithMorphTargets = true;
             }
+			check(IsValid(Material));
             UMaterialEditingLibrary::RecompileMaterial(Material);
         }
-
 #endif
     }
     Mesh->SetMaterials(MaterialsToSet);
