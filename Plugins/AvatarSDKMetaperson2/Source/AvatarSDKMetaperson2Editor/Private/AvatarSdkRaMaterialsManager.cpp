@@ -86,18 +86,20 @@ UAvatarSdkRaMaterialsManager::UAvatarSdkRaMaterialsManager()
 
 void UAvatarSdkRaMaterialsManager::Initialize(bool bUseRtMaterials)
 {
-	Materials.Add(TEXT("outfit_top"), Cast<UMaterialInterface>(StaticLoadObject(UMaterialInterface::StaticClass(), nullptr, *UpperOutfitMaterialRef)));
-	Materials.Add(TEXT("outfit"), Cast<UMaterialInterface>(StaticLoadObject(UMaterialInterface::StaticClass(), nullptr, *UpperOutfitMaterialRef)));
-	Materials.Add(TEXT("AvatarHead"), Cast<UMaterialInterface>(StaticLoadObject(UMaterialInterface::StaticClass(), nullptr, *HeadMaterialRef)));
-	Materials.Add(TEXT("AvatarBody"), Cast<UMaterialInterface>(StaticLoadObject(UMaterialInterface::StaticClass(), nullptr, *BodyMaterialRef)));
-	Materials.Add(TEXT("outfit_shoes"), Cast<UMaterialInterface>(StaticLoadObject(UMaterialInterface::StaticClass(), nullptr, *ShoesMaterialRef)));
-	Materials.Add(TEXT("outfit_bottom"), Cast<UMaterialInterface>(StaticLoadObject(UMaterialInterface::StaticClass(), nullptr, *BottomOutfitMaterialRef)));
+	//;
+
+	Materials.Add(TEXT("outfit_top"), LoadObject<UMaterialInterface>(NULL, *UpperOutfitMaterialRef, NULL, LOAD_None, NULL));
+	Materials.Add(TEXT("outfit"), LoadObject<UMaterialInterface>(NULL, *UpperOutfitMaterialRef, NULL, LOAD_None, NULL));
+	Materials.Add(TEXT("AvatarHead"), LoadObject<UMaterialInterface>(NULL, *HeadMaterialRef, NULL, LOAD_None, NULL));
+	Materials.Add(TEXT("AvatarBody"), LoadObject<UMaterialInterface>(NULL, *BodyMaterialRef, NULL, LOAD_None, NULL));
+	Materials.Add(TEXT("outfit_shoes"), LoadObject<UMaterialInterface>(NULL, *ShoesMaterialRef, NULL, LOAD_None, NULL));
+	Materials.Add(TEXT("outfit_bottom"), LoadObject<UMaterialInterface>(NULL, *BottomOutfitMaterialRef, NULL, LOAD_None, NULL));
 
 	if (bUseRtMaterials) {
-		Materials.Add(TEXT("haircut"), Cast<UMaterialInterface>(StaticLoadObject(UMaterialInterface::StaticClass(), nullptr, *RtHairMaterialRef)));
+		Materials.Add(TEXT("haircut"), LoadObject<UMaterialInterface>(NULL, *RtHairMaterialRef, NULL, LOAD_None, NULL));
 	}
 	else {
-		Materials.Add(TEXT("haircut"), Cast<UMaterialInterface>(StaticLoadObject(UMaterialInterface::StaticClass(), nullptr, *HairMaterialRef)));
+		Materials.Add(TEXT("haircut"), LoadObject<UMaterialInterface>(NULL, *HairMaterialRef, NULL, LOAD_None, NULL));
 	}
 }
 void UAvatarSdkRaMaterialsManager::ReadScalpTexture(FTextureParamsData& Data, USkeletalMesh* Mesh, const FString& DstDir)
@@ -235,16 +237,19 @@ void UAvatarSdkRaMaterialsManager::SetMaterialsToMesh(USkeletalMesh* Mesh, const
 {
 	auto TextureData = ExtractTextureData(Mesh);
 	auto MaterialsToSet = Mesh->GetMaterials();
-
+	check(Materials.Num());
 	FAssetToolsModule& AssetToolsModule =
 		FModuleManager::Get().LoadModuleChecked<FAssetToolsModule>("AssetTools");
 
 	for (FSkeletalMaterial& Mat : MaterialsToSet) {		
-		FTextureParamsData* TextureParamsData = TextureData.Find(Mat.MaterialSlotName.ToString());
-		UMaterialInterface** ParentMaterialPtr = Materials.Find(Mat.MaterialSlotName.ToString());
+		FString MaterialSlotNameStr = Mat.MaterialSlotName.ToString();
+		FTextureParamsData* TextureParamsData = TextureData.Find(MaterialSlotNameStr);
+		UMaterialInterface** ParentMaterialPtr = Materials.Find(MaterialSlotNameStr);
+		UE_LOG(LogTemp, Log, TEXT("Material Slot Name: %s"), *MaterialSlotNameStr);
+
 		if (TextureParamsData && ParentMaterialPtr) {
 			UMaterialInterface* ParentMaterial = *ParentMaterialPtr;
-			FString InstanceName = TEXT("MI_") + Mat.MaterialSlotName.ToString();
+			FString InstanceName = TEXT("MI_") + MaterialSlotNameStr;
 			FString PackageName = FPaths::Combine(DstDir, InstanceName);
 			UMaterialInstanceConstantFactoryNew* Factory = NewObject<UMaterialInstanceConstantFactoryNew>();
 			Factory->InitialParent = ParentMaterial;

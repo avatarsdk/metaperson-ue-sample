@@ -126,7 +126,7 @@ FReply SAvatarSDKMetaperson2Import::OnLoadAnimationButtonClicked()
     }
 	FString AvatarPath = OutFiles[0];
 	UAvatarSDKMetaperson2ImportUtils* Importer = NewObject<UAvatarSDKMetaperson2ImportUtils>();
-
+	Importer->AddToRoot();
 	bool bSuccess = false;
 	auto FbxImportedSkeletalMesh = Importer->ImportSkeletalMesh(AvatarPath, SkeletalMeshDestination, bSuccess);
 	if (!bSuccess) {
@@ -134,6 +134,7 @@ FReply SAvatarSDKMetaperson2Import::OnLoadAnimationButtonClicked()
 	}	
 	FString BlueprintPath = TEXT("/AvatarSDKMetaperson2/ThirdPerson/Blueprints/BP_ThirdPersonCharacter");
 	UpdateBlueprintProperty(BlueprintPath, FbxImportedSkeletalMesh);
+	Importer->RemoveFromRoot();
 	return FReply::Handled();
 }
 END_SLATE_FUNCTION_BUILD_OPTIMIZATION

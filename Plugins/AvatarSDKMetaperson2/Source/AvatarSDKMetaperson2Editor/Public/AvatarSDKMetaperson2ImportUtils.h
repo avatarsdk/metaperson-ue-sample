@@ -22,12 +22,30 @@ class UAvatarSDKMetaperson2ImportUtils : public UObject {
 public:
     UPROPERTY()
     USkeleton* Skeleton;
-
+    USkeleton* GetSkeleton() {
+        if (!IsValid(Skeleton)) {
+            
+            Skeleton = LoadObject<USkeleton>(NULL, *SkeletonRef, NULL, LOAD_None, NULL);
+            
+        }
+        check(IsValid(Skeleton));
+        return Skeleton;
+    }
+    USkeletalMesh* GetReferenseSM() {
+        if (!IsValid(ReferenseSM)) {
+            ReferenseSM = Cast<USkeletalMesh>(StaticLoadObject(USkeleton::StaticClass(), nullptr, *SmRef));
+        }
+        check(IsValid(ReferenseSM));
+        return ReferenseSM;
+    }
+public:
     UPROPERTY()
     USkeletalMesh* ReferenseSM;
     UAvatarSDKMetaperson2ImportUtils() {
-        Skeleton = Cast<USkeleton>(StaticLoadObject(USkeleton::StaticClass(), nullptr, *SkeletonRef));
-        ReferenseSM = Cast <USkeletalMesh>(StaticLoadObject(USkeletalMesh::StaticClass(), nullptr, *SmRef));
+        static ConstructorHelpers::FObjectFinder<USkeleton> SkeletonObj(*SkeletonRef);
+
+        Skeleton = SkeletonObj.Object;
+        ReferenseSM = nullptr;
     }
     static UAssetImportTask* CreateImportTask(const FString& SrcPath, const FString& DstPath, UFactory* ExtraFactory, UObject* ExtraOptions, bool& bOutSuccess);
     static UObject* ProcessImportTask(UAssetImportTask* InTask, bool& bOutSuccess);

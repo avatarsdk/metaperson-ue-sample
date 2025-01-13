@@ -369,7 +369,7 @@ void UAvatarSDKMetaperson2ImportUtils::FixBonesInfluences(USkeletalMesh* Mesh, U
  
 void UAvatarSDKMetaperson2ImportUtils::FixMesh(USkeletalMesh* Mesh) {
     USkeleton* OldSkeleton = DuplicateObject<USkeleton>(Mesh->GetSkeleton(), GetTransientPackage(), NAME_None);
-    SkeletalMeshSetSkeleton(Mesh, Skeleton);
+    SkeletalMeshSetSkeleton(Mesh, GetSkeleton());
     FixSkeletalMeshImportData(Mesh, OldSkeleton);
     FixBonesInfluences(Mesh, OldSkeleton);
 }
@@ -422,11 +422,12 @@ USkeletalMesh* UAvatarSDKMetaperson2ImportUtils::ImportSkeletalMesh(FString& Src
         bOutSuccess = false;
         return nullptr;
     }
-    UAvatarSdkRaMaterialsManager* MaterialsManager = NewObject< UAvatarSdkRaMaterialsManager>();
 
+    UAvatarSdkRaMaterialsManager* MaterialsManager = NewObject<UAvatarSdkRaMaterialsManager>();
+    MaterialsManager->AddToRoot();
     MaterialsManager->Initialize(false);
     MaterialsManager->SetMaterialsToMesh(Result, FPaths::GetPath(DstPath));
-
+    MaterialsManager->RemoveFromRoot();
     //SetUpMeshMaterials(Result);
 
     bOutSuccess = true;
